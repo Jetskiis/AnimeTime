@@ -3,7 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
+    "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -14,8 +14,21 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "sourceMap": true /* Create source map files for emitted JavaScript files. */,
+    /* Type Checking */
+    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
+    "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
+    "strictFunctionTypes": true /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
+    // "strictBindCallApply": true,                      /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
+    "noImplicitThis": true /* Enable error reporting when 'this' is given the type 'any'. */,
+    "strictPropertyInitialization": true /* Check for class properties that are declared but not set in the constructor. */,
+    "noUnusedLocals": false /* Enable error reporting when local variables aren't read. */,
+    "noUnusedParameters": false /* Raise an error when a function parameter isn't read. */,
+    "noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
+    "noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */
   },
-  "include": ["src"],
+  "exclude": ["node_modules"],
+  "include": ["src", "./src/**/*.tsx", "./src/**/*/.ts", "*tsx","*.tsx", "*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

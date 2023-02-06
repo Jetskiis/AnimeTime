@@ -1,10 +1,21 @@
 import './App.css'
 
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar  from './components/Navbar'
 import React from 'react'
+
 
 const App = () => {
   return (
-    <div className='text-5xl font-bold text-center text-red-500'>Apps</div>
+    <>
+    <Router basename="/">
+      <Navbar />
+      <Routes>
+        {/* <Route path="/" index element={<Home />} /> */}
+        
+      </Routes>
+    </Router>
+    </>
   )
 }
 

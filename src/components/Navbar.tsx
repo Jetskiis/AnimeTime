@@ -5,6 +5,7 @@ import seasonInfo from "./Season";
 //navbar
 
 const Navbar = () => {
+
   const year = seasonInfo.year;
   return (
     <nav className=" cursor-pointer bg-gray-700 px-5 py-6 text-white">
@@ -25,7 +26,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <ul className="flex flex-row items-center justify-center text-sm">
+        <ul className="flex flex-row items-center justify-center text-sm font-normal">
           <li className="mx-1.5 flex flex-col items-center">
             <BsMoon className="mb-0.5" />
             {/* <br></br> */}

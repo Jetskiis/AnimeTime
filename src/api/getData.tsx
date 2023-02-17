@@ -1,18 +1,32 @@
-import { useState } from "react";
+const getData = async (season: string, year: number, category: string) => {
+  try {
+    let page = 1;
+    let animeList: any = [];
+    let res = await fetch(
+      `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=` +
+        page
+    );
+    let data = await res.json();
+    // console.log(data);
 
-function getData() {
-  // const [animeList, setAnimeList] = useState([]);
+    while (data.pagination.has_next_page) {
+      res = await fetch(
+        `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=` +
+          page
+      );
+      data = await res.json();
+      data.data.map((anime: any) => {
+        animeList.push(anime);
+      });
 
-  // useEffect(() => {
-  // console.log("useEffect");
-  const data = fetch("https://api.jikan.moe/v4/seasons/now")
-      .then((res) => res.json())
-      .then((data) => console.log(data.data))
-      .catch((error) => console.error(error)); 
-  return data;
-  // }, []);
-}
-
+      page++;
+      // console.log(data);
+    }
+    console.log(animeList);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // const App = () => {
 //   const [animeList, setAnimeList] = useState([]);
@@ -42,4 +56,4 @@ function getData() {
 
 // export default App;
 
-export default getData;
+export { getData };

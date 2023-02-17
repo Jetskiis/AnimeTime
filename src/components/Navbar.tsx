@@ -1,28 +1,30 @@
 import { BsGear, BsMoon } from "react-icons/bs";
 import { MdOutlineViewWeek } from "react-icons/md";
 import seasonInfo from "./Season";
+import { getData } from "../api/getData";
 
 //navbar
 
 const Navbar = () => {
+  getData("winter",2023,"tv");
+  const {firstSeason, secondSeason, thirdSeason, fourthSeason} = seasonInfo;
 
-  const year = seasonInfo.year;
   return (
     <nav className=" cursor-pointer bg-gray-700 px-5 py-6 text-white">
       <div className="flex flex-row items-center justify-around ">
         <h2 className="text-cyan-200 text-xl font-bold italic">AnimeTime</h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
           <li className="mx-3">
-            <a href="">{seasonInfo.firstSeason} {year}</a>
+            <a href="">{firstSeason.season} {firstSeason.year}</a>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{seasonInfo.secondSeason} {year}</a>
+            <a href="">{secondSeason.season} {secondSeason.year}</a>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{seasonInfo.thirdSeason} {year}</a>
+            <a href="">{thirdSeason.season} {thirdSeason.year}</a>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{seasonInfo.fourthSeason} {year}</a>
+            <a href="">{fourthSeason.season} {fourthSeason.year}</a>
           </li>
         </ul>
 

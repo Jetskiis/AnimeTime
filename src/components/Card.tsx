@@ -2,7 +2,19 @@
 import { AiOutlineStar } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
 
-const Card = () => {
+const Card = (
+//   {
+//   episodes: number,
+//   genres: [],
+//   score: number,
+//   title: string,
+//   synopsis: string,
+//   studios: [],
+//   source: manga,
+//   images: {},
+//   members: number,
+// }
+) => {
   return (
     <div className="h-56 overflow-hidden rounded-lg bg-white shadow-lg">
       <div className="grid h-full w-full grid-cols-5 grid-rows-6">

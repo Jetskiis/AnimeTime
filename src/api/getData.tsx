@@ -1,32 +1,46 @@
 const getData = async (season: string, year: number, category: string) => {
+  let animeList: any = [];
+  // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
+
   try {
     let page = 1;
-    let animeList: any = [];
     let res = await fetch(
-      `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=` +
-        page
+      `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
     let data = await res.json();
-    // console.log(data);
 
     while (data.pagination.has_next_page) {
       res = await fetch(
-        `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=` +
-          page
+        `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
       );
       data = await res.json();
-      data.data.map((anime: any) => {
-        animeList.push(anime);
+      data.data.map(async (anime: any) => {
+        animeList.push({
+          id: anime.mal_id,
+          episodes: anime.episodes,
+          genres: anime.genres,
+          score: anime.score,
+          title: anime.title,
+          synopsis: anime.synopsis,
+          studios: anime.studios,
+          source: anime.source,
+          images: anime.images,
+          members: anime.members,
+          broadcast: anime.broadcast,
+        });
       });
 
       page++;
       // console.log(data);
     }
-    console.log(animeList);
+    // console.log(animeList);
   } catch (error) {
     console.error(error);
   }
+  return animeList;
 };
+
+export default getData;
 
 // const App = () => {
 //   const [animeList, setAnimeList] = useState([]);
@@ -53,7 +67,5 @@ const getData = async (season: string, year: number, category: string) => {
 //     );
 //   });
 // };
-
-// export default App;
 
 export { getData };

@@ -6,7 +6,6 @@ import { getData } from "../api/getData";
 //navbar
 
 const Navbar = () => {
-  getData("winter",2023,"tv");
   const {firstSeason, secondSeason, thirdSeason, fourthSeason} = seasonInfo;
 
   return (

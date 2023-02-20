@@ -8,6 +8,26 @@ const getData = async (season: string, year: number, category: string) => {
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
     let data = await res.json();
+    
+    if (data.pagination.has_next_page == false) {
+      data.data.map(async (anime: any) => {
+        animeList.push({
+          season: season,
+          year: year,
+          id: anime.mal_id,
+          episodes: anime.episodes,
+          genres: anime.genres,
+          score: anime.score,
+          title: anime.title,
+          synopsis: anime.synopsis,
+          studios: anime.studios,
+          source: anime.source,
+          images: anime.images,
+          members: anime.members,
+          broadcast: anime.broadcast,
+        });
+      });
+    }
 
     while (data.pagination.has_next_page) {
       res = await fetch(
@@ -16,6 +36,8 @@ const getData = async (season: string, year: number, category: string) => {
       data = await res.json();
       data.data.map(async (anime: any) => {
         animeList.push({
+          season: season,
+          year: year,
           id: anime.mal_id,
           episodes: anime.episodes,
           genres: anime.genres,

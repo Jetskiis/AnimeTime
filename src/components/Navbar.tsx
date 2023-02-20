@@ -1,7 +1,7 @@
 import { BsGear, BsMoon } from "react-icons/bs";
 import { MdOutlineViewWeek } from "react-icons/md";
-import seasonInfo from "./Season";
-import { getData } from "../api/getData";
+import { Link } from "react-router-dom";
+import {seasonInfo} from "./Season";
 
 //navbar
 
@@ -13,17 +13,17 @@ const Navbar = () => {
       <div className="flex flex-row items-center justify-around ">
         <h2 className="text-cyan-200 text-xl font-bold italic">AnimeTime</h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
-          <li className="mx-3">
-            <a href="">{firstSeason.season} {firstSeason.year}</a>
+          <li className="mx-3 hover:">
+            <Link to={`${firstSeason.year}/${firstSeason.season}`} onClick={currentlySelected}> {firstSeason.season} {firstSeason.year} </Link>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{secondSeason.season} {secondSeason.year}</a>
+            <Link to={`${secondSeason.year}/${secondSeason.season}`}>{secondSeason.season} {secondSeason.year}</Link>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{thirdSeason.season} {thirdSeason.year}</a>
+            <Link to={`${thirdSeason.year}/${thirdSeason.season}`}>{thirdSeason.season} {thirdSeason.year}</Link>
           </li>
           <li className="mx-3 text-gray-300">
-            <a href="">{fourthSeason.season} {fourthSeason.year}</a>
+            <Link to={`${fourthSeason.year}/${fourthSeason.season}`}>{fourthSeason.season} {fourthSeason.year}</Link>
           </li>
         </ul>
 
@@ -45,6 +45,9 @@ const Navbar = () => {
       </div>
     </nav>
   );
+};
+
+const currentlySelected = () => {
 };
 
 export default Navbar;

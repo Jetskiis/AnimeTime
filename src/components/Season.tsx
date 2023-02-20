@@ -56,4 +56,11 @@ if (month >= 0 && month <= 2) {
   seasonInfo.fourthSeason.year = year + 1;
 }
 
-export default seasonInfo;
+const seasonDates: any = {
+  "Winter": "January",
+  "Spring": "April",
+  "Summer": "July",
+  "Fall": "October",
+}
+
+export {seasonInfo, seasonDates};

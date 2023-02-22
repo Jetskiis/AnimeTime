@@ -1,10 +1,15 @@
 import "./App.css";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 import CardView from "./components/CardView";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import {seasonInfo} from "./components/Season";
+import { seasonInfo } from "./components/Season";
 
 const App = () => {
   const firstSeason = seasonInfo.firstSeason;
@@ -14,12 +19,18 @@ const App = () => {
 
   return (
     <>
-      <Router basename="/">
+      <Router>
         <Navbar />
         <Routes>
           <Route
+            path="/"
+            element={
+              <Navigate to={`/${firstSeason.year}/${firstSeason.season}`} />
+            }
+          />
+
+          <Route
             path={`/${firstSeason.year}/${firstSeason.season}`}
-            index
             element={
               <CardView season={firstSeason.season} year={firstSeason.year} />
             }

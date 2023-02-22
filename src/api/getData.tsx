@@ -8,7 +8,7 @@ const getData = async (season: string, year: number, category: string) => {
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
     let data = await res.json();
-    
+
     if (data.pagination.has_next_page == false) {
       data.data.map(async (anime: any) => {
         animeList.push({
@@ -63,6 +63,27 @@ const getData = async (season: string, year: number, category: string) => {
 };
 
 export default getData;
+
+const testData = {
+  season: "Winter",
+  year: 2023,
+  id: 20,
+  episodes: 12,
+  genres: [{ name: "genre1" }, { name: "genre2" }],
+  score: 8.67,
+  title: "TEST",
+  synopsis:
+    "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, amet quas odit doloribus vero sit.",
+  studios: [{ name: "studio1" }],
+  source: "manga",
+  images: {
+    jpg: {
+      image_url: "https://cdn.myanimelist.net/images/anime/1963/110732.jpg",
+    },
+  },
+  members: 158000,
+  broadcast: { day: "Thursdays", time: "07:30", timezone: "Asia/Tokyo" },
+};
 
 // const App = () => {
 //   const [animeList, setAnimeList] = useState([]);

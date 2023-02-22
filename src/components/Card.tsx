@@ -1,5 +1,4 @@
 //cards for airing anime
-import { formatInTimeZone } from "date-fns-tz";
 import { AiOutlineStar } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
 import { seasonDates, seasonInfo } from "./Season";
@@ -46,10 +45,6 @@ const Card = ({
     const broadTZ: string = broadcast["timezone"]; //returns timezone
     ({ daysUntil, hoursUntil } = getAiringTime(broadDay, broadTime, broadTZ));
   }
-
-  // if(title == "Bungou Stray Dogs 4th Season"){
-  //   console.log(broadcast);
-  // }
 
   return (
     <div className="h-56 overflow-hidden rounded-lg bg-white shadow-lg">
@@ -136,22 +131,30 @@ const getAiringTime = (
     Saturdays: 6,
   };
 
-  const curDayOfWeek = new Date().getDay();
   let daysUntil, hoursUntil;
 
-  if (dayToNum[broadDay] == curDayOfWeek) {
-    if (parseInt(broadTime.split(":")[0]) < new Date().getHours()) {
-      daysUntil = 6;
-    } else daysUntil = 0;
-  } else {
-    // console.log(title,broadDay);
-    daysUntil = ((7 + dayToNum[broadDay] - curDayOfWeek - 1) % 7) + 1;
-  }
-  const curHours = formatInTimeZone(new Date(), broadTZ, "HH");
+  const options = { timeZone: broadTZ };
+  let today = new Date();
+  today = new Date(Date.parse(today.toLocaleString("en-US", options)));
+  const nextAirDate = new Date();
 
-  hoursUntil =
-    ((24 + parseInt(broadTime.split(":")[0]) - parseInt(curHours) - 1) % 24) +
-    1;
+  // Calculate the next air date based on the day of the week and hour
+  nextAirDate.setDate(today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7));
+  nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
+  nextAirDate.setMinutes(0);
+  nextAirDate.setSeconds(0);
+  nextAirDate.setMilliseconds(0);
+
+  if (nextAirDate.getTime() < today.getTime()) {
+    // If so, add a week to the next air date to get the date of the next episode
+    nextAirDate.setDate(nextAirDate.getDate() + 7);
+  }
+
+  // Calculate the time difference between now and the next air date
+  const timeDiff = nextAirDate.getTime() - today.getTime();
+  daysUntil = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  hoursUntil = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+
   return { daysUntil, hoursUntil };
 };
 

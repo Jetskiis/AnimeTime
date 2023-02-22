@@ -1,29 +1,59 @@
 import { BsGear, BsMoon } from "react-icons/bs";
 import { MdOutlineViewWeek } from "react-icons/md";
-import { Link } from "react-router-dom";
-import {seasonInfo} from "./Season";
+import { Link, useLocation } from "react-router-dom";
+import { seasonInfo } from "./Season";
 
 //navbar
 
 const Navbar = () => {
-  const {firstSeason, secondSeason, thirdSeason, fourthSeason} = seasonInfo;
+  const { firstSeason, secondSeason, thirdSeason, fourthSeason } = seasonInfo;
+  const location = useLocation();
+  let [year, season] = location.pathname.split("/").slice(1);
 
   return (
     <nav className=" cursor-pointer bg-gray-700 px-5 py-6 text-white">
       <div className="flex flex-row items-center justify-around ">
-        <h2 className="text-cyan-200 text-xl font-bold italic">AnimeTime</h2>
+        <h2 className="text-xl font-bold italic text-cyan-200">AnimeTime</h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
-          <li className="mx-3 hover:">
-            <Link to={`${firstSeason.year}/${firstSeason.season}`} onClick={currentlySelected}> {firstSeason.season} {firstSeason.year} </Link>
+          <li
+            className={`mx-3 ${
+              season == firstSeason.season ? "text-white" : "text-gray-300"
+            }  hover:text-slate-400`}
+          >
+            <Link
+              to={`${firstSeason.year}/${firstSeason.season}`}
+              onClick={currentlySelected}
+            >
+              {" "}
+              {firstSeason.season} {firstSeason.year}{" "}
+            </Link>
           </li>
-          <li className="mx-3 text-gray-300">
-            <Link to={`${secondSeason.year}/${secondSeason.season}`}>{secondSeason.season} {secondSeason.year}</Link>
+          <li
+            className={`mx-3 ${
+              season == secondSeason.season ? "text-white" : "text-gray-300"
+            }  hover:text-slate-400`}
+          >
+            <Link to={`${secondSeason.year}/${secondSeason.season}`}>
+              {secondSeason.season} {secondSeason.year}
+            </Link>
           </li>
-          <li className="mx-3 text-gray-300">
-            <Link to={`${thirdSeason.year}/${thirdSeason.season}`}>{thirdSeason.season} {thirdSeason.year}</Link>
+          <li
+            className={`mx-3 ${
+              season == thirdSeason.season ? "text-white" : "text-gray-300"
+            }  hover:text-slate-400`}
+          >
+            <Link to={`${thirdSeason.year}/${thirdSeason.season}`}>
+              {thirdSeason.season} {thirdSeason.year}
+            </Link>
           </li>
-          <li className="mx-3 text-gray-300">
-            <Link to={`${fourthSeason.year}/${fourthSeason.season}`}>{fourthSeason.season} {fourthSeason.year}</Link>
+          <li
+            className={`mx-3 ${
+              season == fourthSeason.season ? "text-white" : "text-gray-300"
+            }  hover:text-slate-400`}
+          >
+            <Link to={`${fourthSeason.year}/${fourthSeason.season}`}>
+              {fourthSeason.season} {fourthSeason.year}
+            </Link>
           </li>
         </ul>
 
@@ -47,7 +77,6 @@ const Navbar = () => {
   );
 };
 
-const currentlySelected = () => {
-};
+const currentlySelected = () => {};
 
 export default Navbar;

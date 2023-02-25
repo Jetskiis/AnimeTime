@@ -1,25 +1,31 @@
 //cards for airing anime
 import { AiOutlineStar } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
-import { seasonDates, seasonInfo } from "./Season";
+import { seasonDates, seasonInfo } from "../modules/Season";
 
-interface cardData {
-  episodes: number;
+interface cardProps {
+  isPrevSeason: boolean; //sent from CardView to determine if show is a leftover from previous season
+  isCurrentlyAiring: boolean; //used for this season's shows to see if its finished
+
+  //data received for all shows
   genres: any;
+  studios: any;
+  images: any;
+  aired: any;
+  broadcast: any;
+  episodes: number;
   score: number;
+  members: number;
+  year: number;
   title: string;
   synopsis: string;
-  studios: any;
   source: string;
-  images: any;
-  members: number;
-  broadcast: any;
-  epData: any;
   season: string;
-  year: number;
 }
 
 const Card = ({
+  isPrevSeason,
+  isCurrentlyAiring,
   broadcast,
   episodes,
   genres,
@@ -32,18 +38,60 @@ const Card = ({
   members,
   season,
   year,
-  epData,
-}: cardData) => {
-  // console.log(genres);
+  aired,
+}: cardProps) => {
+  // console.log(broadcast["timezone"]);
 
   const { firstSeason } = seasonInfo;
-  let daysUntil, hoursUntil;
+  let daysUntil: any, hoursUntil: any;
 
-  if (season == firstSeason.season && year == firstSeason.year) {
+  const displayAiringInfo = () => {
+    if (isCurrentlyAiring) {
+      return (
+        <>
+          {season === firstSeason.season || isPrevSeason
+            ? `Episode X of ${
+                episodes == null ? "?" : episodes
+              } airing in${" "}`
+            : `Airing In`}
+          <p className="text-base font-medium">
+            {season === firstSeason.season || isPrevSeason
+              ? `${daysUntil} days, ${hoursUntil} hours${" "}`
+              : `${seasonDates[season]} ${year}`}
+          </p>
+        </>
+      );
+    } else {
+      const date = new Date();
+      date.setMonth(aired["prop"]["to"]["month"] - 1);
+      const month = date.toLocaleString("en-us", { month: "long" });
+
+      return (
+        <>
+          {episodes} Episodes aired on
+          <p className="text-base font-medium">
+            {month} {aired["prop"]["to"]["day"]}, {aired["prop"]["to"]["year"]}
+          </p>
+        </>
+      );
+    }
+  };
+
+  //calculates airing time for current season's shows (includes continuing shows)
+  if (
+    isPrevSeason ||
+    (season == firstSeason.season && year == firstSeason.year)
+  ) {
     const broadDay: string = broadcast["day"]; //returns day of week as string
     const broadTime: string = broadcast["time"]; //returns HH:MM
     const broadTZ: string = broadcast["timezone"]; //returns timezone
-    ({ daysUntil, hoursUntil } = getAiringTime(broadDay, broadTime, broadTZ));
+    if (broadDay != null && broadTime != null && broadTZ != null) {
+      ({ daysUntil, hoursUntil } = getAiringTime(broadDay, broadTime, broadTZ));
+    } else {
+      {
+        (daysUntil = "?"), (hoursUntil = "?");
+      }
+    }
   }
 
   return (
@@ -91,19 +139,23 @@ const Card = ({
 
           <div className="row-span-2 px-2 py-1 text-center leading-4">
             <span className="text-sm">
-              {season === firstSeason.season
+              {/* If the show is a continuing one or from this season then... */}
+              {displayAiringInfo()}
+              {/* {season === firstSeason.season || isPrevSeason
                 ? `Episode X of ${
                     episodes == null ? "?" : episodes
                   } airing in${" "}`
                 : `Airing In`}
+              
 
               <p className="text-base font-medium">
-                {season === firstSeason.season
+                {season === firstSeason.season || isPrevSeason
                   ? `${daysUntil} days, ${hoursUntil} hours${" "}`
                   : `${seasonDates[season]} ${year}`}
-              </p>
+              </p> */}
             </span>
           </div>
+
           <div className="flex min-h-0 flex-1 flex-col px-2 pb-2 text-xs">
             <p className="mb-1 italic">Source: {source}</p>
             <p className="flex-1 overflow-x-hidden overflow-y-hidden hover:overflow-y-scroll">
@@ -133,13 +185,16 @@ const getAiringTime = (
 
   let daysUntil, hoursUntil;
 
+  //Convert current date to proper timezone
   const options = { timeZone: broadTZ };
   let today = new Date();
   today = new Date(Date.parse(today.toLocaleString("en-US", options)));
   const nextAirDate = new Date();
 
   // Calculate the next air date based on the day of the week and hour
-  nextAirDate.setDate(today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7));
+  nextAirDate.setDate(
+    today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7)
+  );
   nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
   nextAirDate.setMinutes(0);
   nextAirDate.setSeconds(0);

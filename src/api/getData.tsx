@@ -1,4 +1,9 @@
-const getData = async (season: string, year: number, category: string) => {
+const getData = async (
+  season: string,
+  year: number,
+  category: string,
+  previousSeason: boolean
+) => {
   let animeList: any = [];
   // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
 
@@ -9,47 +14,54 @@ const getData = async (season: string, year: number, category: string) => {
     );
     let data = await res.json();
 
-    if (data.pagination.has_next_page == false) {
-      data.data.map(async (anime: any) => {
-        animeList.push({
-          season: season,
-          year: year,
-          id: anime.mal_id,
-          episodes: anime.episodes,
-          genres: anime.genres,
-          score: anime.score,
-          title: anime.title,
-          synopsis: anime.synopsis,
-          studios: anime.studios,
-          source: anime.source,
-          images: anime.images,
-          members: anime.members,
-          broadcast: anime.broadcast,
-        });
-      });
-    }
+    while (page == 1 || data.pagination.has_next_page) {
+      if (page != 1) {
+        res = await fetch(
+          `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
+        );
+        data = await res.json();
+      }
 
-    while (data.pagination.has_next_page) {
-      res = await fetch(
-        `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
-      );
-      data = await res.json();
       data.data.map(async (anime: any) => {
-        animeList.push({
-          season: season,
-          year: year,
-          id: anime.mal_id,
-          episodes: anime.episodes,
-          genres: anime.genres,
-          score: anime.score,
-          title: anime.title,
-          synopsis: anime.synopsis,
-          studios: anime.studios,
-          source: anime.source,
-          images: anime.images,
-          members: anime.members,
-          broadcast: anime.broadcast,
-        });
+        if (previousSeason == true) {
+          if (anime.status === "Currently Airing") {
+            animeList.push({
+              season: season,
+              year: year,
+              id: anime.mal_id,
+              episodes: anime.episodes,
+              genres: anime.genres,
+              score: anime.score,
+              title: anime.title,
+              synopsis: anime.synopsis,
+              studios: anime.studios,
+              source: anime.source,
+              images: anime.images,
+              members: anime.members,
+              broadcast: anime.broadcast,
+              aired: anime.aired,
+              isCurrentlyAiring: true,
+            });
+          }
+        } else {
+          animeList.push({
+            season: season,
+            year: year,
+            id: anime.mal_id,
+            episodes: anime.episodes,
+            genres: anime.genres,
+            score: anime.score,
+            title: anime.title,
+            synopsis: anime.synopsis,
+            studios: anime.studios,
+            source: anime.source,
+            images: anime.images,
+            members: anime.members,
+            broadcast: anime.broadcast,
+            aired: anime.aired,
+            isCurrentlyAiring: anime.status === "Currently Airing",
+          });
+        }
       });
 
       page++;
@@ -84,31 +96,5 @@ const testData = {
   members: 158000,
   broadcast: { day: "Thursdays", time: "07:30", timezone: "Asia/Tokyo" },
 };
-
-// const App = () => {
-//   const [animeList, setAnimeList] = useState([]);
-
-//   useEffect(() => {
-//     console.log("useEffect");
-//     fetch("https://api.jikan.moe/v4/seasons/now")
-//       .then((res) => res.json())
-//       .then((data) => setAnimeList(data.data))
-//       .catch((error) => console.error(error));
-//   }, []);
-
-//   if (!animeList) return <div>Loading...</div>;
-
-//   // loop over the animeList array and return a div for each anime
-//   return animeList.map((anime) => {
-//     return (
-//       <div key={anime.mal_id}>
-//         <h3>{anime.title}</h3>
-//         <img src={anime.images?.jpg?.small_image_url} alt={anime.title} />
-//         <p>Episodes: {anime.episodes}</p>
-//         <p>Score: {anime.score}</p>
-//       </div>
-//     );
-//   });
-// };
 
 export { getData };

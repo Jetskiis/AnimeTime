@@ -1,7 +1,7 @@
 import { BsGear, BsMoon } from "react-icons/bs";
 import { MdOutlineViewWeek } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
-import { seasonInfo } from "./Season";
+import { seasonInfo } from "../modules/Season";
 
 //navbar
 
@@ -63,7 +63,10 @@ const Navbar = () => {
             {/* <br></br> */}
             Dark
           </li>
-          <li className="mx-1.5 flex flex-col items-center">
+          <li
+            className="mx-1.5 flex flex-col items-center"
+            onClick={() => alert("This feature has not been added yet.")}
+          >
             <MdOutlineViewWeek className="mb-0.5" />
             Weekly
           </li>

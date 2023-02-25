@@ -9,7 +9,7 @@ import {
 import CardView from "./components/CardView";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import { seasonInfo } from "./components/Season";
+import { seasonInfo } from "./modules/Season";
 
 const App = () => {
   const firstSeason = seasonInfo.firstSeason;

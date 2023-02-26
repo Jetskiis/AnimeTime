@@ -23,6 +23,7 @@ const getData = async (
       }
 
       data.data.map(async (anime: any) => {
+        //continuing shows from previous season
         if (previousSeason == true) {
           if (anime.status === "Currently Airing") {
             animeList.push({
@@ -41,9 +42,11 @@ const getData = async (
               broadcast: anime.broadcast,
               aired: anime.aired,
               isCurrentlyAiring: true,
+              isPrevSeason: true,
             });
           }
         } else {
+          //new shows
           animeList.push({
             season: season,
             year: year,
@@ -60,6 +63,7 @@ const getData = async (
             broadcast: anime.broadcast,
             aired: anime.aired,
             isCurrentlyAiring: anime.status === "Currently Airing",
+            isPrevSeason: false,
           });
         }
       });

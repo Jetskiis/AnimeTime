@@ -45,23 +45,25 @@ const Card = ({
   const { firstSeason } = seasonInfo;
   let daysUntil: any, hoursUntil: any;
 
+  //displays airing info based on if the show if finished airing, if it hasn't aired yet, or if it's currently airing
   const displayAiringInfo = () => {
+    //currently airing show from this season (includes continuing shows)
     if (isCurrentlyAiring) {
       return (
         <>
-          {season === firstSeason.season || isPrevSeason
-            ? `Episode X of ${
-                episodes == null ? "?" : episodes
-              } airing in${" "}`
-            : `Airing In`}
+          Episode X of {episodes == null ? "?" : episodes} airing in
           <p className="text-base font-medium">
-            {season === firstSeason.season || isPrevSeason
-              ? `${daysUntil} days, ${hoursUntil} hours${" "}`
-              : `${seasonDates[season]} ${year}`}
+            {daysUntil} days, {hoursUntil} hours{" "}
           </p>
         </>
       );
-    } else {
+    }
+    //finished airing show from this season
+    else if (
+      !isCurrentlyAiring &&
+      !isPrevSeason &&
+      season === firstSeason.season
+    ) {
       const date = new Date();
       date.setMonth(aired["prop"]["to"]["month"] - 1);
       const month = date.toLocaleString("en-us", { month: "long" });
@@ -71,6 +73,17 @@ const Card = ({
           {episodes} Episodes aired on
           <p className="text-base font-medium">
             {month} {aired["prop"]["to"]["day"]}, {aired["prop"]["to"]["year"]}
+          </p>
+        </>
+      );
+    }
+    //shows for future seasons
+    else if (!isCurrentlyAiring) {
+      return (
+        <>
+          Airing In
+          <p className="text-base font-medium">
+            {seasonDates[season]} {year}
           </p>
         </>
       );
@@ -141,18 +154,6 @@ const Card = ({
             <span className="text-sm">
               {/* If the show is a continuing one or from this season then... */}
               {displayAiringInfo()}
-              {/* {season === firstSeason.season || isPrevSeason
-                ? `Episode X of ${
-                    episodes == null ? "?" : episodes
-                  } airing in${" "}`
-                : `Airing In`}
-              
-
-              <p className="text-base font-medium">
-                {season === firstSeason.season || isPrevSeason
-                  ? `${daysUntil} days, ${hoursUntil} hours${" "}`
-                  : `${seasonDates[season]} ${year}`}
-              </p> */}
             </span>
           </div>
 

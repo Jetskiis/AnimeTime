@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { getData } from "../api/getData";
 import { seasonInfo } from "../modules/Season";
+import reducer from "../modules/sortAnime";
 import Card from "./Card";
+import DropdownMenu from "./DropdownMenu";
 
 //card view - default view for website
 
@@ -36,7 +38,8 @@ const CardView = (props: CardViewProps) => {
       break;
   }
 
-  const [animeList, setAnimeList] = useState({} as AnimeList);
+  const [animeList, dispatch] = useReducer(reducer, {} as AnimeList);
+  const [sortType, setSortType] = useState("default");
 
   useEffect(() => {
     async function getAnimeList() {
@@ -50,12 +53,16 @@ const CardView = (props: CardViewProps) => {
       if (season == seasonInfo.firstSeason.season) {
         prevTVData = await getData(prevSeason, prevYear, "tv", true);
       }
-      if (prevTVData != null)
-        setAnimeList({ ...animeList, currentTVData, prevTVData });
-      else setAnimeList({ ...animeList, currentTVData });
+      dispatch({
+        type: "setAnimeList",
+        payload: { currentTVData, prevTVData },
+      });
+      if (sortType !== "default") {
+        dispatch({ type: sortType as any, payload: {currentTVData, prevTVData} });
+      }
     }
     getAnimeList();
-  }, [props]);
+  }, [props, sortType]);
 
   if (Object.keys(animeList).length === 0) {
     return (
@@ -67,32 +74,38 @@ const CardView = (props: CardViewProps) => {
 
   return (
     <div>
-      <h2 className="px-5 pt-5 text-xl font-bold uppercase text-gray-600 ">
-        TV
-      </h2>
+      <div className="flex flex-row items-center justify-between">
+        <h2 className="mb-1 px-5 pt-5 text-xl font-bold uppercase text-gray-600 ">
+          TV
+        </h2>
+
+        <DropdownMenu setSortType={setSortType} />
+      </div>
+
       <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
         {animeList.currentTVData.map((entry: any) => (
           <Card className="col-span-1" key={entry.id} {...entry} />
         ))}
       </div>
 
-      {season == seasonInfo.firstSeason.season && (
-        <>
-          <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
-            Continuing
-          </h2>
-          <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-            {animeList.prevTVData.map((entry: any) => (
-              <Card
-                className="col-span-1"
-                key={entry.id}
-                {...entry}
-                isPrevSeason={true}
-              />
-            ))}
-          </div>
-        </>
-      )}
+      {season == seasonInfo.firstSeason.season &&
+        animeList.prevTVData != null && (
+          <>
+            <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
+              Continuing
+            </h2>
+            <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+              {animeList.prevTVData.map((entry: any) => (
+                <Card
+                  className="col-span-1"
+                  key={entry.id}
+                  {...entry}
+                  isPrevSeason={true}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
       {/*
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">

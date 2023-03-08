@@ -47,6 +47,14 @@ const Card = ({
 
   //displays airing info based on if the show if finished airing, if it hasn't aired yet, or if it's currently airing
   const displayAiringInfo = () => {
+    const date = new Date();
+
+    date.setMonth(aired["prop"]["from"]["month"] - 1);
+    const startMonth = date.toLocaleString("en-us", { month: "long" });
+
+    date.setMonth(aired["prop"]["to"]["month"] - 1);
+    const endMonth = date.toLocaleString("en-us", { month: "long" });
+
     //currently airing show from this season (includes continuing shows)
     if (isCurrentlyAiring) {
       return (
@@ -64,26 +72,26 @@ const Card = ({
       !isPrevSeason &&
       season === firstSeason.season
     ) {
-      const date = new Date();
-      date.setMonth(aired["prop"]["to"]["month"] - 1);
-      const month = date.toLocaleString("en-us", { month: "long" });
-
       return (
         <>
           {episodes} Episodes aired on
           <p className="text-base font-medium">
-            {month} {aired["prop"]["to"]["day"]}, {aired["prop"]["to"]["year"]}
+            {endMonth} {aired["prop"]["to"]["day"]},{" "}
+            {aired["prop"]["to"]["year"]}
           </p>
         </>
       );
     }
     //shows for future seasons
     else if (!isCurrentlyAiring) {
+      const startDay = aired["prop"]["from"]["day"];
       return (
         <>
-          Airing In
+          Airing On
           <p className="text-base font-medium">
-            {seasonDates[season]} {year}
+            {startDay != null
+              ? `${startMonth} ${aired["prop"]["from"]["day"]}, ${aired["prop"]["from"]["year"]}`
+              : `${seasonDates[season]} ${year}`}
           </p>
         </>
       );
@@ -193,9 +201,13 @@ const getAiringTime = (
   const nextAirDate = new Date();
 
   // Calculate the next air date based on the day of the week and hour
+  const currMonth = today.getMonth();
   nextAirDate.setDate(
     today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7)
   );
+  if (nextAirDate.getMonth() != currMonth) {
+    nextAirDate.setMonth(nextAirDate.getMonth() + 1);
+  }
   nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
   nextAirDate.setMinutes(0);
   nextAirDate.setSeconds(0);
@@ -204,6 +216,9 @@ const getAiringTime = (
   if (nextAirDate.getTime() < today.getTime()) {
     // If so, add a week to the next air date to get the date of the next episode
     nextAirDate.setDate(nextAirDate.getDate() + 7);
+    if (nextAirDate.getMonth() != currMonth) {
+      nextAirDate.setMonth(nextAirDate.getMonth() + 1);
+    }
   }
 
   // Calculate the time difference between now and the next air date

@@ -57,7 +57,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <ul className="flex flex-row items-center justify-center text-sm font-normal">
+        <ul className="opacity-0 flex flex-row items-center justify-center text-sm font-normal">
           <li className="mx-1.5 flex flex-col items-center">
             <BsMoon className="mb-0.5" />
             {/* <br></br> */}
@@ -65,7 +65,7 @@ const Navbar = () => {
           </li>
           <li
             className="mx-1.5 flex flex-col items-center"
-            onClick={() => alert("This feature has not been added yet.")}
+            // onClick={() => alert("This feature has not been added yet.")}
           >
             <MdOutlineViewWeek className="mb-0.5" />
             Weekly

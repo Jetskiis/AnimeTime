@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useReducer, useState } from "react";
 import { getData } from "../api/getData";
 import { seasonInfo } from "../modules/Season";
@@ -53,12 +54,17 @@ const CardView = (props: CardViewProps) => {
       if (season == seasonInfo.firstSeason.season) {
         prevTVData = await getData(prevSeason, prevYear, "tv", true);
       }
+      // dispatch({ type: "clearAnimeList" });
+
       dispatch({
         type: "setAnimeList",
         payload: { currentTVData, prevTVData },
       });
       if (sortType !== "default") {
-        dispatch({ type: sortType as any, payload: {currentTVData, prevTVData} });
+        dispatch({
+          type: sortType as any,
+          payload: { currentTVData, prevTVData },
+        });
       }
     }
     getAnimeList();
@@ -84,7 +90,9 @@ const CardView = (props: CardViewProps) => {
 
       <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
         {animeList.currentTVData.map((entry: any) => (
-          <Card className="col-span-1" key={entry.id} {...entry} />
+          <AnimatePresence>
+            <Card className="col-span-1" key={entry.id} {...entry} />
+          </AnimatePresence>
         ))}
       </div>
 
@@ -95,14 +103,16 @@ const CardView = (props: CardViewProps) => {
               Continuing
             </h2>
             <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-              {animeList.prevTVData.map((entry: any) => (
-                <Card
-                  className="col-span-1"
-                  key={entry.id}
-                  {...entry}
-                  isPrevSeason={true}
-                />
-              ))}
+              <AnimatePresence>
+                {animeList.prevTVData.map((entry: any) => (
+                  <Card
+                    className="col-span-1"
+                    key={entry.id}
+                    {...entry}
+                    isPrevSeason={true}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
           </>
         )}

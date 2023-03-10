@@ -1,4 +1,11 @@
-const getData = async (
+import pThrottle from "p-throttle"
+
+const throttle = pThrottle({
+  limit: 3,
+  interval: 1000,
+})
+
+const getData = throttle(async (
   season: string,
   year: number,
   category: string,
@@ -76,7 +83,7 @@ const getData = async (
     console.error(error);
   }
   return animeList;
-};
+});
 
 export default getData;
 

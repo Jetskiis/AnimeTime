@@ -1,4 +1,5 @@
 type ACTIONTYPE =
+  | { type: "clearAnimeList" }
   | { type: "setAnimeList"; payload: { currentTVData: any; prevTVData: any } }
   | { type: "sortByScore"; payload: { currentTVData: any; prevTVData: any } }
   | {
@@ -15,6 +16,8 @@ type ACTIONTYPE =
 const reducer = (state: any, action: ACTIONTYPE) => {
   let obj;
   switch (action.type) {
+    case "clearAnimeList":
+      return {};
     case "setAnimeList":
       return {
         currentTVData: action.payload.currentTVData,

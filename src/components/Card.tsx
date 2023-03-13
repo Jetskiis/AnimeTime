@@ -100,6 +100,10 @@ const Card = ({
         </>
       );
     }
+
+    else{
+      return <></>;
+    }
   };
 
   //calculates airing time for current season's shows (includes continuing shows)

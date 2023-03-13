@@ -1,38 +1,64 @@
-import pThrottle from "p-throttle"
+import pThrottle from "p-throttle";
 
 const throttle = pThrottle({
   limit: 3,
   interval: 1000,
-})
+});
 
-const getData = throttle(async (
-  season: string,
-  year: number,
-  category: string,
-  previousSeason: boolean
-) => {
-  let animeList: any = [];
-  // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
-
-  try {
-    let page = 1;
-    let res = await fetch(
+const fetchFn = throttle(
+  async (page: number, season: string, year: number, category: string) => {
+    return fetch(
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
-    let data = await res.json();
+  }
+);
 
-    while (page == 1 || data.pagination.has_next_page) {
-      if (page != 1) {
-        res = await fetch(
-          `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
-        );
-        data = await res.json();
-      }
+const getData = throttle(
+  async (
+    season: string,
+    year: number,
+    category: string,
+    previousSeason: boolean
+  ) => {
+    let animeList: any = [];
+    // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
 
-      data.data.map(async (anime: any) => {
-        //continuing shows from previous season
-        if (previousSeason == true) {
-          if (anime.status === "Currently Airing") {
+    try {
+      let page = 1;
+      let res = await fetchFn(page, season, year, category);
+      let data = await res.json();
+
+      while (page == 1 || data.pagination.has_next_page) {
+        if (page != 1) {
+          res = await fetchFn(page, season, year, category);
+          data = await res.json();
+        }
+
+        data.data.map(async (anime: any) => {
+          //continuing shows from previous season
+          if (previousSeason == true) {
+            if (anime.status === "Currently Airing") {
+              animeList.push({
+                season: season,
+                year: year,
+                id: anime.mal_id,
+                episodes: anime.episodes,
+                genres: anime.genres,
+                score: anime.score,
+                title: anime.title,
+                synopsis: anime.synopsis,
+                studios: anime.studios,
+                source: anime.source,
+                images: anime.images,
+                members: anime.members,
+                broadcast: anime.broadcast,
+                aired: anime.aired,
+                isCurrentlyAiring: true,
+                isPrevSeason: true,
+              });
+            }
+          } else {
+            //new shows
             animeList.push({
               season: season,
               year: year,
@@ -48,42 +74,22 @@ const getData = throttle(async (
               members: anime.members,
               broadcast: anime.broadcast,
               aired: anime.aired,
-              isCurrentlyAiring: true,
-              isPrevSeason: true,
+              isCurrentlyAiring: anime.status === "Currently Airing",
+              isPrevSeason: false,
             });
           }
-        } else {
-          //new shows
-          animeList.push({
-            season: season,
-            year: year,
-            id: anime.mal_id,
-            episodes: anime.episodes,
-            genres: anime.genres,
-            score: anime.score,
-            title: anime.title,
-            synopsis: anime.synopsis,
-            studios: anime.studios,
-            source: anime.source,
-            images: anime.images,
-            members: anime.members,
-            broadcast: anime.broadcast,
-            aired: anime.aired,
-            isCurrentlyAiring: anime.status === "Currently Airing",
-            isPrevSeason: false,
-          });
-        }
-      });
+        });
 
-      page++;
-      // console.log(data);
+        page++;
+        // console.log(data);
+      }
+      // console.log(animeList);
+    } catch (error) {
+      console.error(error);
     }
-    // console.log(animeList);
-  } catch (error) {
-    console.error(error);
+    return animeList;
   }
-  return animeList;
-});
+);
 
 export default getData;
 

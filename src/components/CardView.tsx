@@ -89,8 +89,8 @@ const CardView = (props: CardViewProps) => {
       </div>
 
       <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-        {animeList.currentTVData.map((entry: any) => (
-          <AnimatePresence>
+        {animeList.currentTVData.map((entry: any, idx: number) => (
+          <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />
           </AnimatePresence>
         ))}
@@ -103,16 +103,16 @@ const CardView = (props: CardViewProps) => {
               Continuing
             </h2>
             <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-              <AnimatePresence>
-                {animeList.prevTVData.map((entry: any) => (
+              {animeList.prevTVData.map((entry: any, idx: number) => (
+                <AnimatePresence key={idx}>
                   <Card
                     className="col-span-1"
                     key={entry.id}
                     {...entry}
                     isPrevSeason={true}
                   />
-                ))}
-              </AnimatePresence>
+                </AnimatePresence>
+              ))}
             </div>
           </>
         )}

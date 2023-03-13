@@ -5,6 +5,11 @@ const throttle = pThrottle({
   interval: 1000,
 });
 
+const getDataThrottle = pThrottle({
+  limit: 1,
+  interval: 2000,
+});
+
 const fetchFn = throttle(
   async (page: number, season: string, year: number, category: string) => {
     return fetch(
@@ -13,7 +18,7 @@ const fetchFn = throttle(
   }
 );
 
-const getData = throttle(
+const getData = getDataThrottle(
   async (
     season: string,
     year: number,
@@ -33,6 +38,7 @@ const getData = throttle(
           res = await fetchFn(page, season, year, category);
           data = await res.json();
         }
+        // console.log(data);
 
         data.data.map(async (anime: any) => {
           //continuing shows from previous season

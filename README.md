@@ -1,6 +1,6 @@
 Created with React, TypeScript, React Router, TailwindCSS, and Vite.
 
-Site: [AnimeTime](anime-time-mu.vercel.app)
+Site: [AnimeTime](https://anime-time-mu.vercel.app)
 
 Uses the JIKAN API (MyAnimeList Scraper) and AnimeSchedule.net API for seasonal anime data (not added yet)
 

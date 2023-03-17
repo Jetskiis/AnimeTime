@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { getData } from "../api/getData";
 import { seasonInfo } from "../modules/Season";
 import reducer from "../modules/sortAnime";
@@ -16,6 +16,10 @@ interface CardViewProps {
 interface AnimeList {
   currentTVData: any;
   prevTVData: any;
+  movieData: any;
+  ovaData: any;
+  onaData: any;
+  specialData: any;
 }
 
 const CardView = (props: CardViewProps) => {
@@ -41,39 +45,76 @@ const CardView = (props: CardViewProps) => {
 
   const [animeList, dispatch] = useReducer(reducer, {} as AnimeList);
   const [sortType, setSortType] = useState("default");
+  const [isLoading, setIsLoading] = useState(true);
+  const prevProps = useRef({} as any);
 
   useEffect(() => {
     async function getAnimeList() {
-      const currentTVData = await getData(season, year, "tv", false);
+      let currentTVData = animeList.currentTVData;
       let prevTVData = null;
-      // const movieData = await getData(season, year, "movie", false);
-      // const ovaData = await getData(season, year, "ova", false);
-      // const onaData = await getData(season, year, "ona", false);
-      // const specialData = await getData(season, year, "special", false);
+      let movieData = animeList.movieData;
+      let ovaData = animeList.ovaData;
+      let onaData= animeList.onaData;
+      let specialData = animeList.specialData;
 
-      if (season == seasonInfo.firstSeason.season) {
-        prevTVData = await getData(prevSeason, prevYear, "tv", true);
+      if (
+        prevProps.current.season != season ||
+        prevProps.current.year != year
+      ) {
+        setIsLoading(true);
+
+        currentTVData = await getData(season, year, "tv", false);
+        prevTVData = null;
+        movieData = await getData(season, year, "movie", false);
+        ovaData = await getData(season, year, "ova", false);
+        onaData = await getData(season, year, "ona", false);
+        specialData = await getData(season, year, "special", false);
+
+        if (season == seasonInfo.firstSeason.season) {
+          prevTVData = await getData(prevSeason, prevYear, "tv", true);
+        }
+
+        dispatch({
+          type: "setAnimeList",
+          payload: {
+            currentTVData,
+            prevTVData,
+            movieData,
+            ovaData,
+            onaData,
+            specialData,
+          },
+        });
+        setIsLoading(false);
+        prevProps.current.season = season;
+        prevProps.current.year = year;
       }
-      // dispatch({ type: "clearAnimeList" });
 
-      dispatch({
-        type: "setAnimeList",
-        payload: { currentTVData, prevTVData },
-      });
       if (sortType !== "default") {
+        setIsLoading(true);
+
         dispatch({
           type: sortType as any,
-          payload: { currentTVData, prevTVData },
+          payload: {
+            currentTVData,
+            prevTVData,
+            movieData,
+            ovaData,
+            onaData,
+            specialData,
+          },
         });
+        setIsLoading(false);
       }
     }
     getAnimeList();
   }, [props, sortType]);
 
-  if (Object.keys(animeList).length === 0) {
+  if (isLoading) {
     return (
       <div className="fw-bold h-screen pt-28 text-center text-5xl">
         Loading...
+        <p className="text-base">(reload if there are errors)</p>
       </div>
     );
   }
@@ -117,20 +158,49 @@ const CardView = (props: CardViewProps) => {
           </>
         )}
 
-      {/*
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
         Movie
       </h2>
       <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-        <Card className="col-span-1" />
+        {animeList.movieData.map((entry: any, idx: number) => (
+          <AnimatePresence key={idx}>
+            <Card className="col-span-1" key={entry.id} {...entry} />
+          </AnimatePresence>
+        ))}
       </div>
 
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
-        ONA / OVA / Special
+        OVA
       </h2>
       <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
-        <Card className="col-span-1" />
-      </div> */}
+        {animeList.ovaData.map((entry: any, idx: number) => (
+          <AnimatePresence key={idx}>
+            <Card className="col-span-1" key={entry.id} {...entry} />
+          </AnimatePresence>
+        ))}
+      </div>
+
+      <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
+        ONA
+      </h2>
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+        {animeList.onaData.map((entry: any, idx: number) => (
+          <AnimatePresence key={idx}>
+            <Card className="col-span-1" key={entry.id} {...entry} />
+          </AnimatePresence>
+        ))}
+      </div>
+
+      <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
+        Specials
+      </h2>
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+        {animeList.specialData.map((entry: any, idx: number) => (
+          <AnimatePresence key={idx}>
+            <Card className="col-span-1" key={entry.id} {...entry} />
+          </AnimatePresence>
+        ))}
+      </div>
     </div>
   );
 };

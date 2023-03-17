@@ -1,5 +1,5 @@
 //cards for airing anime
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { AiOutlineStar } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
 import { seasonDates, seasonInfo } from "../modules/Season";
@@ -70,21 +70,36 @@ const Card = ({
         </>
       );
     }
-    //finished airing show from this season
+    //finished airing show from this season (incl. movies, ovas, etc.)
     else if (
       !isCurrentlyAiring &&
       !isPrevSeason &&
       season === firstSeason.season
     ) {
-      return (
-        <>
-          {episodes} Episodes aired on
-          <p className="text-base font-medium">
-            {endMonth} {aired["prop"]["to"]["day"]},{" "}
-            {aired["prop"]["to"]["year"]}
-          </p>
-        </>
-      );
+      if (
+        aired["prop"]["to"]["day"] == null ||
+        aired["prop"]["to"]["month"] == null
+      ) {
+        return (
+          <>
+            {episodes} Episodes aired on
+            <p className="text-base font-medium">
+              {startMonth} {aired["prop"]["from"]["day"]},{" "}
+              {aired["prop"]["from"]["year"]}
+            </p>
+          </>
+        );
+      } else {
+        return (
+          <>
+            {episodes} Episodes aired on
+            <p className="text-base font-medium">
+              {endMonth} {aired["prop"]["to"]["day"]},{" "}
+              {aired["prop"]["to"]["year"]}
+            </p>
+          </>
+        );
+      }
     }
     //shows for future seasons
     else if (!isCurrentlyAiring) {
@@ -99,9 +114,7 @@ const Card = ({
           </p>
         </>
       );
-    }
-
-    else{
+    } else {
       return <></>;
     }
   };
@@ -130,7 +143,7 @@ const Card = ({
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       // exit={{opacity: 0}}
-      transition={{ type: 'easeInOut', duration: 0.5, delay: 0.1 }}
+      transition={{ type: "easeInOut", duration: 0.5, delay: 0.1 }}
     >
       <div className="h-56 overflow-hidden rounded-lg bg-white shadow-lg">
         <div className="grid h-full w-full grid-cols-5 grid-rows-6">

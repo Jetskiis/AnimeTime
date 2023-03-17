@@ -12,6 +12,11 @@ const getDataThrottle = pThrottle({
 
 const fetchFn = throttle(
   async (page: number, season: string, year: number, category: string) => {
+    if (category !== "tv") {
+      return fetch(
+        `http://staging.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
+      );
+    }
     return fetch(
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
@@ -38,12 +43,40 @@ const getData = getDataThrottle(
           res = await fetchFn(page, season, year, category);
           data = await res.json();
         }
-        // console.log(data);
 
-        data.data.map(async (anime: any) => {
-          //continuing shows from previous season
-          if (previousSeason == true) {
-            if (anime.status === "Currently Airing") {
+        // if (category == "movie") {
+        //   data.data.map((anime: any) => {
+        //     console.log(anime.aired.from);
+        //   });
+        // }
+
+        data.data
+          .filter((anime:any) => (!anime.genres.some((obj:any) => obj.name == "Hentai"))) //removes hentai from results
+          .map(async (anime: any) => {
+            //continuing shows from previous season
+            if (previousSeason == true) {
+              if (anime.status === "Currently Airing") {
+                animeList.push({
+                  season: season,
+                  year: year,
+                  id: anime.mal_id,
+                  episodes: anime.episodes,
+                  genres: anime.genres,
+                  score: anime.score,
+                  title: anime.title,
+                  synopsis: anime.synopsis,
+                  studios: anime.studios,
+                  source: anime.source,
+                  images: anime.images,
+                  members: anime.members,
+                  broadcast: anime.broadcast,
+                  aired: anime.aired,
+                  isCurrentlyAiring: true,
+                  isPrevSeason: true,
+                });
+              }
+            } else {
+              //new shows
               animeList.push({
                 season: season,
                 year: year,
@@ -59,32 +92,11 @@ const getData = getDataThrottle(
                 members: anime.members,
                 broadcast: anime.broadcast,
                 aired: anime.aired,
-                isCurrentlyAiring: true,
-                isPrevSeason: true,
+                isCurrentlyAiring: anime.status === "Currently Airing",
+                isPrevSeason: false,
               });
             }
-          } else {
-            //new shows
-            animeList.push({
-              season: season,
-              year: year,
-              id: anime.mal_id,
-              episodes: anime.episodes,
-              genres: anime.genres,
-              score: anime.score,
-              title: anime.title,
-              synopsis: anime.synopsis,
-              studios: anime.studios,
-              source: anime.source,
-              images: anime.images,
-              members: anime.members,
-              broadcast: anime.broadcast,
-              aired: anime.aired,
-              isCurrentlyAiring: anime.status === "Currently Airing",
-              isPrevSeason: false,
-            });
-          }
-        });
+          });
 
         page++;
         // console.log(data);

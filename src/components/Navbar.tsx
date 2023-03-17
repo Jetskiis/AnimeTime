@@ -20,10 +20,7 @@ const Navbar = () => {
               season == firstSeason.season ? "text-white" : "text-gray-300"
             }  hover:text-slate-400`}
           >
-            <Link
-              to={`${firstSeason.year}/${firstSeason.season}`}
-              onClick={currentlySelected}
-            >
+            <Link to={`${firstSeason.year}/${firstSeason.season}`}>
               {" "}
               {firstSeason.season} {firstSeason.year}{" "}
             </Link>
@@ -57,7 +54,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <ul className="opacity-0 flex flex-row items-center justify-center text-sm font-normal">
+        <ul className="flex flex-row items-center justify-center text-sm font-normal opacity-0">
           <li className="mx-1.5 flex flex-col items-center">
             <BsMoon className="mb-0.5" />
             {/* <br></br> */}
@@ -79,7 +76,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
-const currentlySelected = () => {};
 
 export default Navbar;

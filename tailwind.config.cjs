@@ -7,7 +7,9 @@ module.exports = {
         xxs: ".7rem",
       },
       screens: {
+        smx: "700px",
         base: "960px",
+        //sm,smx,md,base,xl,2xl
       },
     },
   },

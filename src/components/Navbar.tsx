@@ -11,14 +11,16 @@ const Navbar = () => {
   let [year, season] = location.pathname.split("/").slice(1);
 
   return (
-    <nav className=" cursor-pointer bg-gray-700 px-5 py-6 text-white">
-      <div className="flex flex-row items-center justify-around ">
-        <h2 className="text-xl font-bold italic text-cyan-200">AnimeTime</h2>
+    <nav className="cursor-pointer bg-gray-700 px-5 py-6 text-white">
+      <div className="flex w-full flex-row items-center justify-around">
+        <h2 className="text-xl font-bold italic text-cyan-200 opacity-0 smx:opacity-100">
+          AnimeTime
+        </h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
           <li
             className={`mx-3 ${
               season == firstSeason.season ? "text-white" : "text-gray-300"
-            }  hover:text-slate-400`}
+            }  hover:text-slate-400 text-center`}
           >
             <Link to={`${firstSeason.year}/${firstSeason.season}`}>
               {" "}
@@ -28,7 +30,7 @@ const Navbar = () => {
           <li
             className={`mx-3 ${
               season == secondSeason.season ? "text-white" : "text-gray-300"
-            }  hover:text-slate-400`}
+            }  hover:text-slate-400 text-center`}
           >
             <Link to={`${secondSeason.year}/${secondSeason.season}`}>
               {secondSeason.season} {secondSeason.year}
@@ -37,7 +39,7 @@ const Navbar = () => {
           <li
             className={`mx-3 ${
               season == thirdSeason.season ? "text-white" : "text-gray-300"
-            }  hover:text-slate-400`}
+            }  hover:text-slate-400 text-center`}
           >
             <Link to={`${thirdSeason.year}/${thirdSeason.season}`}>
               {thirdSeason.season} {thirdSeason.year}
@@ -46,7 +48,7 @@ const Navbar = () => {
           <li
             className={`mx-3 ${
               season == fourthSeason.season ? "text-white" : "text-gray-300"
-            }  hover:text-slate-400`}
+            }  hover:text-slate-400 text-center`}
           >
             <Link to={`${fourthSeason.year}/${fourthSeason.season}`}>
               {fourthSeason.season} {fourthSeason.year}

@@ -54,7 +54,7 @@ const CardView = (props: CardViewProps) => {
       let prevTVData = null;
       let movieData = animeList.movieData;
       let ovaData = animeList.ovaData;
-      let onaData= animeList.onaData;
+      let onaData = animeList.onaData;
       let specialData = animeList.specialData;
 
       if (
@@ -129,7 +129,7 @@ const CardView = (props: CardViewProps) => {
         <DropdownMenu setSortType={setSortType} />
       </div>
 
-      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
         {animeList.currentTVData.map((entry: any, idx: number) => (
           <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />
@@ -143,7 +143,7 @@ const CardView = (props: CardViewProps) => {
             <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
               Continuing
             </h2>
-            <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+            <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
               {animeList.prevTVData.map((entry: any, idx: number) => (
                 <AnimatePresence key={idx}>
                   <Card
@@ -161,7 +161,7 @@ const CardView = (props: CardViewProps) => {
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
         Movie
       </h2>
-      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
         {animeList.movieData.map((entry: any, idx: number) => (
           <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />
@@ -172,7 +172,7 @@ const CardView = (props: CardViewProps) => {
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
         OVA
       </h2>
-      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
         {animeList.ovaData.map((entry: any, idx: number) => (
           <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />
@@ -183,7 +183,7 @@ const CardView = (props: CardViewProps) => {
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
         ONA
       </h2>
-      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
         {animeList.onaData.map((entry: any, idx: number) => (
           <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />
@@ -194,7 +194,7 @@ const CardView = (props: CardViewProps) => {
       <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
         Specials
       </h2>
-      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-1">
+      <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
         {animeList.specialData.map((entry: any, idx: number) => (
           <AnimatePresence key={idx}>
             <Card className="col-span-1" key={entry.id} {...entry} />

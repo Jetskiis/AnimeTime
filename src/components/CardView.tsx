@@ -5,6 +5,7 @@ import { seasonInfo } from "../modules/Season";
 import reducer from "../modules/sortAnime";
 import Card from "./Card";
 import DropdownMenu from "./DropdownMenu";
+import Loader from "./Loading"; 
 
 //card view - default view for website
 
@@ -112,10 +113,7 @@ const CardView = (props: CardViewProps) => {
 
   if (isLoading) {
     return (
-      <div className="fw-bold h-screen pt-28 text-center text-5xl">
-        Loading...
-        <p className="text-base">(reload if there are errors)</p>
-      </div>
+        <Loader />
     );
   }
 

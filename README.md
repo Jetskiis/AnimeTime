@@ -11,5 +11,9 @@ Features:
 
 Known Bugs:
 - Current episode number not displayed
+- Potential issues with exact times the shows air (not sure if this is an issue with the API or not)
+- Long running continuing anime (like One Piece) don't show up due to how the API works
 
 This site might break if there are API changes.
+
+Images:

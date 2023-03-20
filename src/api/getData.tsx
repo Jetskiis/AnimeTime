@@ -7,7 +7,7 @@ const throttle = pThrottle({
 
 const getDataThrottle = pThrottle({
   limit: 1,
-  interval: 2000,
+  interval: 1000,
 });
 
 const fetchFn = throttle(

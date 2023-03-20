@@ -121,7 +121,7 @@ const Card = ({
 
   //calculates airing time for current season's shows (includes continuing shows)
   if (
-    isPrevSeason ||
+    isPrevSeason || isCurrentlyAiring ||
     (season == firstSeason.season && year == firstSeason.year)
   ) {
     const broadDay: string = broadcast["day"]; //returns day of week as string

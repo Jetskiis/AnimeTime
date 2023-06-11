@@ -17,3 +17,6 @@ Known Bugs:
 This site might break if there are API changes.
 
 Images:
+![anitime-img-1](https://user-images.githubusercontent.com/31109249/226437621-427b862b-e1a7-4124-bc0c-627c0efbcb3a.png)
+![anitime-img-3](https://user-images.githubusercontent.com/31109249/226437623-7a809fce-3855-493c-b7b9-d809e0dd2ffc.png)
+![anitime-img-2](https://user-images.githubusercontent.com/31109249/226437625-7dde047c-afa1-4f13-b76e-dfa2988ce858.png)

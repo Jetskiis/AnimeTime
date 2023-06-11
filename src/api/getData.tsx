@@ -12,11 +12,6 @@ const getDataThrottle = pThrottle({
 
 const fetchFn = throttle(
   async (page: number, season: string, year: number, category: string) => {
-    if (category !== "tv") {
-      return fetch(
-        `http://staging.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
-      );
-    }
     return fetch(
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );

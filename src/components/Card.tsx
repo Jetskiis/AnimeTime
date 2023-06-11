@@ -121,7 +121,8 @@ const Card = ({
 
   //calculates airing time for current season's shows (includes continuing shows)
   if (
-    isPrevSeason || isCurrentlyAiring ||
+    isPrevSeason ||
+    isCurrentlyAiring ||
     (season == firstSeason.season && year == firstSeason.year)
   ) {
     const broadDay: string = broadcast["day"]; //returns day of week as string
@@ -236,9 +237,6 @@ const getAiringTime = (
   nextAirDate.setDate(
     today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7)
   );
-  if (nextAirDate.getMonth() != currMonth) {
-    nextAirDate.setMonth(nextAirDate.getMonth() + 1);
-  }
   nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
   nextAirDate.setMinutes(0);
   nextAirDate.setSeconds(0);

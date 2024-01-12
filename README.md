@@ -1,5 +1,6 @@
-Created with React, TypeScript, React Router, TailwindCSS, Framer Motion (Front End)
-Python, Django, PostgreSQL (Back End) 
+Created with:  
+  - React, TypeScript, React Router, TailwindCSS, Framer Motion (Front End) 
+  - Python, Django, PostgreSQL (Back End) 
 
 Site: [AnimeTime](https://anime-time-mu.vercel.app)
 

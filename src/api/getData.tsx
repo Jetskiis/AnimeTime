@@ -1,14 +1,10 @@
 import pThrottle from "p-throttle";
 
 const throttle = pThrottle({
-  limit: 3,
-  interval: 1000,
-});
-
-const getDataThrottle = pThrottle({
   limit: 1,
   interval: 1000,
 });
+//api rate limit = 60 req/min
 
 const fetchFn = throttle(
   async (page: number, season: string, year: number, category: string) => {
@@ -18,60 +14,38 @@ const fetchFn = throttle(
   }
 );
 
-const getData = getDataThrottle(
-  async (
-    season: string,
-    year: number,
-    category: string,
-    previousSeason: boolean
-  ) => {
-    let animeList: any = [];
-    // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
+const getData = async (
+  season: string,
+  year: number,
+  category: string,
+  previousSeason: boolean
+) => {
+  let animeList: any = [];
+  //api key
+  // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
 
-    try {
-      let page = 1;
-      let res = await fetchFn(page, season, year, category);
-      let data = await res.json();
+  try {
+    let page = 1;
+    let res = await fetchFn(page, season, year, category);
+    let data = await res.json();
+    let animeID = new Set<number>();
 
-      while (page == 1 || data.pagination.has_next_page) {
-        if (page != 1) {
-          res = await fetchFn(page, season, year, category);
-          data = await res.json();
-        }
+    while (page == 1 || data.pagination.has_next_page) {
+      if (page != 1) {
+        res = await fetchFn(page, season, year, category);
+        data = await res.json();
+      }
 
-        // if (category == "movie") {
-        //   data.data.map((anime: any) => {
-        //     console.log(anime.aired.from);
-        //   });
-        // }
+      data.data
+        .filter(
+          (anime: any) => !anime.genres.some((obj: any) => obj.name == "Hentai")
+        ) //removes hentai from results
+        .map(async (anime: any) => {
+          //get continuing shows from previous season
+          if(animeID.has(anime.mal_id)) return;
 
-        data.data
-          .filter((anime:any) => (!anime.genres.some((obj:any) => obj.name == "Hentai"))) //removes hentai from results
-          .map(async (anime: any) => {
-            //continuing shows from previous season
-            if (previousSeason == true) {
-              if (anime.status === "Currently Airing") {
-                animeList.push({
-                  season: season,
-                  year: year,
-                  id: anime.mal_id,
-                  episodes: anime.episodes,
-                  genres: anime.genres,
-                  score: anime.score,
-                  title: anime.title,
-                  synopsis: anime.synopsis,
-                  studios: anime.studios,
-                  source: anime.source,
-                  images: anime.images,
-                  members: anime.members,
-                  broadcast: anime.broadcast,
-                  aired: anime.aired,
-                  isCurrentlyAiring: true,
-                  isPrevSeason: true,
-                });
-              }
-            } else {
-              //new shows
+          if (previousSeason == true) {
+            if (anime.episodes >= 15) {
               animeList.push({
                 season: season,
                 year: year,
@@ -87,22 +61,44 @@ const getData = getDataThrottle(
                 members: anime.members,
                 broadcast: anime.broadcast,
                 aired: anime.aired,
-                isCurrentlyAiring: anime.status === "Currently Airing",
-                isPrevSeason: false,
+                isCurrentlyAiring: anime.status,
+                isPrevSeason: true,
               });
+              animeID.add(anime.mal_id);
             }
-          });
+          } else {
+            //get shows that have not previously aired before (could be this season/future seasons)
+            animeList.push({
+              season: season,
+              year: year,
+              id: anime.mal_id,
+              episodes: anime.episodes,
+              genres: anime.genres,
+              score: anime.score,
+              title: anime.title,
+              synopsis: anime.synopsis,
+              studios: anime.studios,
+              source: anime.source,
+              images: anime.images,
+              members: anime.members,
+              broadcast: anime.broadcast,
+              aired: anime.aired,
+              isCurrentlyAiring: anime.status,
+              isPrevSeason: false,
+            });
+            animeID.add(anime.mal_id);
+          }
+        });
 
-        page++;
-        // console.log(data);
-      }
-      // console.log(animeList);
-    } catch (error) {
-      console.error(error);
+      page++;
+      // console.log(data);
     }
-    return animeList;
+    // console.log(animeList);
+  } catch (error) {
+    console.error(error);
   }
-);
+  return animeList;
+};
 
 export default getData;
 
@@ -126,5 +122,3 @@ const testData = {
   members: 158000,
   broadcast: { day: "Thursdays", time: "07:30", timezone: "Asia/Tokyo" },
 };
-
-export { getData };

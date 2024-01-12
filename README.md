@@ -1,4 +1,5 @@
-Created with React, TypeScript, React Router, TailwindCSS, Framer Motion, and Vite.
+Created with React, TypeScript, React Router, TailwindCSS, Framer Motion (Front End)
+Python, Django, PostgreSQL (Back End) 
 
 Site: [AnimeTime](https://anime-time-mu.vercel.app)
 
@@ -12,9 +13,9 @@ Features:
 Known Bugs:
 - Current episode number not displayed
 - Potential issues with exact times the shows air (not sure if this is an issue with the API or not)
-- Long running continuing anime (like One Piece) don't show up due to how the API works
+- Long running continuing anime (like One Piece) don't show up due to how the Jikan API works
 
-This site might break if there are API changes.
+Warning: This site might break if there are API changes.
 
 Images:
 ![anitime-img-1](https://user-images.githubusercontent.com/31109249/226437621-427b862b-e1a7-4124-bc0c-627c0efbcb3a.png)

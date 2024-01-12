@@ -48,7 +48,7 @@ const DotTransition = {
 
 const Loader = () => {
   return (
-    <div className="fw-bold h-screen pt-28 text-center text-5xl">
+    <div className="fw-bold h-screen pt-32 text-center text-5xl">
       <div className="flex flex-row justify-center items-center">
       Loading data
       <motion.div

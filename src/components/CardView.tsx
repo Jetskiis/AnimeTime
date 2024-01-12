@@ -1,11 +1,11 @@
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useReducer, useRef, useState } from "react";
-import { getData } from "../api/getData";
+import getData from "../api/getData";
 import { seasonInfo } from "../modules/Season";
 import reducer from "../modules/sortAnime";
 import Card from "./Card";
 import DropdownMenu from "./DropdownMenu";
-import Loader from "./Loading"; 
+import Loader from "./Loading";
 
 //card view - default view for website
 
@@ -23,9 +23,7 @@ interface AnimeList {
   specialData: any;
 }
 
-const CardView = (props: CardViewProps) => {
-  const { season, year } = props;
-
+const CardView = ({ season, year }: CardViewProps) => {
   let prevSeason: string;
   let prevYear: number = year;
   switch (season) {
@@ -52,7 +50,7 @@ const CardView = (props: CardViewProps) => {
   useEffect(() => {
     async function getAnimeList() {
       let currentTVData = animeList.currentTVData;
-      let prevTVData = null;
+      let prevTVData = animeList.prevTVData || null;
       let movieData = animeList.movieData;
       let ovaData = animeList.ovaData;
       let onaData = animeList.onaData;
@@ -93,7 +91,6 @@ const CardView = (props: CardViewProps) => {
 
       if (sortType !== "default") {
         setIsLoading(true);
-
         dispatch({
           type: sortType as any,
           payload: {
@@ -107,14 +104,13 @@ const CardView = (props: CardViewProps) => {
         });
         setIsLoading(false);
       }
+
     }
     getAnimeList();
-  }, [props, sortType]);
+  }, [season, year, sortType]);
 
   if (isLoading) {
-    return (
-        <Loader />
-    );
+    return <Loader />;
   }
 
   return (

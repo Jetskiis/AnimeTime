@@ -13,7 +13,7 @@ const Navbar = () => {
   return (
     <nav className="cursor-pointer bg-gray-700 px-5 py-6 text-white">
       <div className="flex w-full flex-row items-center justify-around">
-        <h2 className="text-xl font-bold italic text-cyan-200 opacity-0 smx:opacity-100">
+        <h2 className="text-2xl font-bold italic text-cyan-200 opacity-0 smx:opacity-100">
           AnimeTime
         </h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
@@ -56,7 +56,7 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <ul className="flex flex-row items-center justify-center text-sm font-normal opacity-0">
+        <ul className="flex flex-row items-center justify-center text-sm opacity-90 text-white font-medium ">
           <li className="mx-1.5 flex flex-col items-center">
             <BsMoon className="mb-0.5" />
             {/* <br></br> */}

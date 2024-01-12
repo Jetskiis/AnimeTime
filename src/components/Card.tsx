@@ -1,16 +1,19 @@
-//cards for airing anime
+//Individual cards for each show
 import { motion } from "framer-motion";
 import { AiOutlineStar } from "react-icons/ai";
 import { BsPersonFill } from "react-icons/bs";
 import { seasonDates, seasonInfo } from "../modules/Season";
 
+enum AiringStatus {
+  "Finished Airing" = "Finished Airing",
+  "Currently Airing" = "Currently Airing",
+  "Not yet aired" = "Not yet aired",
+}
+
 interface cardProps {
   id: number;
-
   isPrevSeason: boolean; //sent from CardView to determine if show is a leftover from previous season
-  isCurrentlyAiring: boolean; //used for this season's shows to see if its finished
-
-  //data received for all shows
+  isCurrentlyAiring: AiringStatus;
   genres: any;
   studios: any;
   images: any;
@@ -25,6 +28,56 @@ interface cardProps {
   source: string;
   season: string;
 }
+
+//Calculate the time until the next episode in Days/Hours
+const getAiringTime = (
+  broadDay: string,
+  broadTime: string,
+  broadTZ: string
+) => {
+  const dayToNum: { [key: string]: any } = {
+    Sundays: 0,
+    Mondays: 1,
+    Tuesdays: 2,
+    Wednesdays: 3,
+    Thursdays: 4,
+    Fridays: 5,
+    Saturdays: 6,
+  };
+
+  let daysUntil, hoursUntil;
+
+  //Convert current date to proper timezone
+  const options = { timeZone: broadTZ };
+  let today = new Date();
+  today = new Date(Date.parse(today.toLocaleString("en-US", options)));
+  const nextAirDate = new Date();
+
+  // Calculate the next air date based on the day of the week and hour
+  const currMonth = today.getMonth();
+  nextAirDate.setDate(
+    today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7)
+  );
+  nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
+  nextAirDate.setMinutes(0);
+  nextAirDate.setSeconds(0);
+  nextAirDate.setMilliseconds(0);
+
+  if (nextAirDate.getTime() < today.getTime()) {
+    // If so, add a week to the next air date to get the date of the next episode
+    nextAirDate.setDate(nextAirDate.getDate() + 7);
+    if (nextAirDate.getMonth() != currMonth) {
+      nextAirDate.setMonth(nextAirDate.getMonth() + 1);
+    }
+  }
+
+  // Calculate the time difference between now and the next air date
+  const timeDiff = nextAirDate.getTime() - today.getTime();
+  daysUntil = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  hoursUntil = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
+
+  return { daysUntil, hoursUntil };
+};
 
 const Card = ({
   id,
@@ -44,23 +97,26 @@ const Card = ({
   year,
   aired,
 }: cardProps) => {
-  // console.log(broadcast["timezone"]);
-
   const { firstSeason } = seasonInfo;
   let daysUntil: any, hoursUntil: any;
 
   //displays airing info based on if the show if finished airing, if it hasn't aired yet, or if it's currently airing
   const displayAiringInfo = () => {
     const date = new Date();
+    const today = new Date();
 
-    date.setMonth(aired["prop"]["from"]["month"] - 1);
+    const startDay = aired["prop"]["from"]["day"];
+    const startMonthNumber = parseInt(aired["prop"]["from"]["month"]);
+    const endMonthNumber = parseInt(aired["prop"]["to"]["month"]);
+
+    date.setMonth(startMonthNumber - 1);
     const startMonth = date.toLocaleString("en-us", { month: "long" });
 
-    date.setMonth(aired["prop"]["to"]["month"] - 1);
+    date.setMonth(endMonthNumber - 1);
     const endMonth = date.toLocaleString("en-us", { month: "long" });
 
-    //currently airing show from this season (includes continuing shows)
-    if (isCurrentlyAiring) {
+    //currently airing show from this season (includes prev season's continuing shows)
+    if (isCurrentlyAiring === "Currently Airing") {
       return (
         <>
           Episode X of {episodes == null ? "?" : episodes} airing in
@@ -70,9 +126,10 @@ const Card = ({
         </>
       );
     }
+
     //finished airing show from this season (incl. movies, ovas, etc.)
     else if (
-      !isCurrentlyAiring &&
+      isCurrentlyAiring == "Finished Airing" &&
       !isPrevSeason &&
       season === firstSeason.season
     ) {
@@ -82,7 +139,7 @@ const Card = ({
       ) {
         return (
           <>
-            {episodes} Episodes aired on
+            {episodes} Episodes aired starting
             <p className="text-base font-medium">
               {startMonth} {aired["prop"]["from"]["day"]},{" "}
               {aired["prop"]["from"]["year"]}
@@ -92,7 +149,7 @@ const Card = ({
       } else {
         return (
           <>
-            {episodes} Episodes aired on
+            {episodes} Episodes aired by
             <p className="text-base font-medium">
               {endMonth} {aired["prop"]["to"]["day"]},{" "}
               {aired["prop"]["to"]["year"]}
@@ -101,28 +158,40 @@ const Card = ({
         );
       }
     }
-    //shows for future seasons
-    else if (!isCurrentlyAiring) {
-      const startDay = aired["prop"]["from"]["day"];
-      return (
-        <>
-          Airing On
-          <p className="text-base font-medium">
-            {startDay != null
-              ? `${startMonth} ${aired["prop"]["from"]["day"]}, ${aired["prop"]["from"]["year"]}`
-              : `${seasonDates[season]} ${year}`}
-          </p>
-        </>
-      );
-    } else {
-      return <></>;
+
+    //shows for future seasons or shows that have not aired yet (start/end date usually is unknown)
+    else if (isCurrentlyAiring == "Not yet aired") {
+      //supposed start date has already passed
+      if (
+        startMonthNumber < today.getMonth() + 1 ||
+        (startMonthNumber == today.getMonth() + 1 && startDay < today.getDate())
+      ) {
+        return (
+          <>
+            Airing Date:
+            <p className="text-base font-medium leading-none mb-1">To Be Determined</p>
+          </>
+        );
+      } else {
+        return (
+          <>
+            Airing On
+            <p className="text-base font-medium leading-none">
+              {startDay != null
+                ? `${startMonth} ${aired["prop"]["from"]["day"]}, ${aired["prop"]["from"]["year"]}`
+                : `${seasonDates[season]} ${year}`}
+            </p>
+            (subject to change)
+          </>
+        );
+      }
     }
   };
 
   //calculates airing time for current season's shows (includes continuing shows)
   if (
     isPrevSeason ||
-    isCurrentlyAiring ||
+    isCurrentlyAiring === "Currently Airing" ||
     (season == firstSeason.season && year == firstSeason.year)
   ) {
     const broadDay: string = broadcast["day"]; //returns day of week as string
@@ -138,7 +207,6 @@ const Card = ({
   }
 
   return (
-    // <AnimatePresence>
     <motion.div
       key={id}
       initial={{ y: 20, opacity: 0 }}
@@ -205,57 +273,7 @@ const Card = ({
         </div>
       </div>
     </motion.div>
-    // </AnimatePresence>
   );
-};
-
-const getAiringTime = (
-  broadDay: string,
-  broadTime: string,
-  broadTZ: string
-) => {
-  const dayToNum: { [key: string]: any } = {
-    Sundays: 0,
-    Mondays: 1,
-    Tuesdays: 2,
-    Wednesdays: 3,
-    Thursdays: 4,
-    Fridays: 5,
-    Saturdays: 6,
-  };
-
-  let daysUntil, hoursUntil;
-
-  //Convert current date to proper timezone
-  const options = { timeZone: broadTZ };
-  let today = new Date();
-  today = new Date(Date.parse(today.toLocaleString("en-US", options)));
-  const nextAirDate = new Date();
-
-  // Calculate the next air date based on the day of the week and hour
-  const currMonth = today.getMonth();
-  nextAirDate.setDate(
-    today.getDate() + ((7 + dayToNum[broadDay] - today.getDay()) % 7)
-  );
-  nextAirDate.setHours(parseInt(broadTime.split(":")[0]));
-  nextAirDate.setMinutes(0);
-  nextAirDate.setSeconds(0);
-  nextAirDate.setMilliseconds(0);
-
-  if (nextAirDate.getTime() < today.getTime()) {
-    // If so, add a week to the next air date to get the date of the next episode
-    nextAirDate.setDate(nextAirDate.getDate() + 7);
-    if (nextAirDate.getMonth() != currMonth) {
-      nextAirDate.setMonth(nextAirDate.getMonth() + 1);
-    }
-  }
-
-  // Calculate the time difference between now and the next air date
-  const timeDiff = nextAirDate.getTime() - today.getTime();
-  daysUntil = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  hoursUntil = Math.floor((timeDiff / (1000 * 60 * 60)) % 24);
-
-  return { daysUntil, hoursUntil };
 };
 
 export default Card;

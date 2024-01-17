@@ -9,7 +9,11 @@ import {
 import CardView from "./components/CardView";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import RegisterForm from "./components/RegisterPage";
+import LoginForm from "./components/LoginPage";
+import ResetLogin from "./components/ResetLogin";
 import { seasonInfo } from "./modules/Season";
+
 
 const App = () => {
   const firstSeason = seasonInfo.firstSeason;
@@ -47,12 +51,25 @@ const App = () => {
               <CardView season={thirdSeason.season} year={thirdSeason.year} />
             }
           />
+          
           <Route
             path={`/${fourthSeason.year}/${fourthSeason.season}`}
             element={
               <CardView season={fourthSeason.season} year={fourthSeason.year} />
             }
           />
+
+          <Route
+            path={'/login'}
+            element={<LoginForm />}
+          />
+
+          <Route 
+          path={'/register'}
+          element={<RegisterForm />}
+          />
+          <Route path={'/reset-password'} element={<ResetLogin/>}/>
+
         </Routes>
         <Footer />
       </Router>

@@ -1,3 +1,5 @@
+from django.conf.urls import include
+
 """
 URL configuration for api project.
 
@@ -16,7 +18,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/register', views.post),
+    path('api/login', views.post),
+    path('api-auth/', include('rest_framework.urls'))
 ]

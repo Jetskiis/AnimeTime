@@ -5,7 +5,7 @@ import { redirect } from "react-router-dom";
 
 const RegisterForm = () => {
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    // const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/register";
+    const url = import.meta.env.VITE_BACKEND_URL + "/api/register";
     const email: HTMLInputElement | null = document.querySelector(
       'input[name="email"]'
     );
@@ -39,9 +39,9 @@ const RegisterForm = () => {
         password: password!.value,
         email: email!.value,
       })
-      .then(async () => {
+      .then(async (res) => {
         await axios.post(
-          //   process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login",
+          import.meta.env.VITE_BACKEND_URL + "/api/login",
           {
             username: username!.value,
             password: password!.value,
@@ -49,7 +49,8 @@ const RegisterForm = () => {
           },
           { withCredentials: true }
         );
-        redirect("/");
+        console.log(res.data);
+        // redirect("/");
       })
       .catch((err) => {
         if (err.response.status == 400) {

@@ -13,7 +13,7 @@ const Navbar = () => {
 
   return (
     <nav className=" bg-gray-700 px-5 py-6 text-white">
-      <div className="cursor-pointer flex w-full flex-row items-center justify-around">
+      <div className="flex w-full cursor-pointer flex-row items-center justify-around">
         <h2 className="text-2xl font-bold italic text-cyan-200 opacity-0 smx:opacity-100">
           AnimeTime
         </h2>
@@ -71,11 +71,9 @@ const Navbar = () => {
             <BsGear className="mb-0.5" />
             Settings
           </li> */}
-          <li className="mx-1.5 flex flex-col items-center hover:opacity-70">
-            <LuLogIn className="mb-0.5" color="red"/>
-            <Link className="underline underline-offset-4"
-              to="/login"
-            >
+          <li className="mx-1.5 flex flex-col items-center justify-center hover:opacity-70">
+            <Link className="underline underline-offset-4" to="/login">
+              <LuLogIn className="ml-2 mb-0.5" color="red" />
               Login
             </Link>
           </li>

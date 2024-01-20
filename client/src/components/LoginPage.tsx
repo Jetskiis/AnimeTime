@@ -5,7 +5,7 @@ import { redirect } from "react-router-dom";
 
 const LoginForm = () => {
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    // const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login";
+    const url = import.meta.env.VITE_BACKEND_URL + "/api/login";
     const username: HTMLInputElement | null = document.querySelector(
       'input[name="username"]'
     );

@@ -1,8 +1,10 @@
-import React from 'react'
+import axios from "axios";
+import React from "react";
+import { Link } from "react-router-dom";
 
 const ResetLogin = () => {
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    // const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login";
+    const url = import.meta.env.VITE_BACKEND_URL + "/api/login";
     const email: HTMLInputElement | null = document.querySelector(
       'input[name="email"]'
     );
@@ -13,14 +15,15 @@ const ResetLogin = () => {
     e.preventDefault();
 
     await axios
-      .post(
-        url,
-        { username: username!.value, email: email!.value },
-        { withCredentials: true }
-      )
+      .post(url, { username: username!.value, email: email!.value })
       .then((res) => {
         if (res.data.success) {
-          redirect("/");
+          return (
+            <div className="fw-bold h-screen pt-32 text-center text-5xl">
+              <h1>Email Sent!</h1>
+              <Link to="">Log back in.</Link>
+            </div>
+          );
         }
       })
       .catch((err) => {
@@ -60,7 +63,9 @@ const ResetLogin = () => {
       <div className="flex min-h-screen flex-col bg-gray-100">
         <div className="container mx-auto flex max-w-sm flex-1 flex-col items-center justify-center px-2">
           <div className="w-full rounded bg-white px-6 py-8 text-black shadow-md">
-            <h1 className="mb-8 text-center text-3xl font-bold">Reset Password</h1>
+            <h1 className="mb-8 text-center text-3xl font-bold">
+              Reset Password
+            </h1>
 
             <input
               type="email"
@@ -104,15 +109,13 @@ const ResetLogin = () => {
               }}
               className="hover:bg-green-dark mt-5 w-full rounded bg-red-500 py-3 text-center text-white hover:bg-red-600"
             >
-                Reset Password
+              Reset Password
             </button>
-
           </div>
-
         </div>
       </div>
     );
   }
-}
+};
 
-export default ResetLogin
+export default ResetLogin;

@@ -40,17 +40,15 @@ const RegisterForm = () => {
         email: email!.value,
       })
       .then(async (res) => {
-        await axios.post(
-          import.meta.env.VITE_BACKEND_URL + "/api/login",
-          {
-            username: username!.value,
-            password: password!.value,
-            email: email!.value,
-          },
-          { withCredentials: true }
-        );
-        console.log(res.data);
-        // redirect("/");
+        // await axios.post(
+        //   import.meta.env.VITE_BACKEND_URL + "/api/login",
+        //   {
+        //     username: username!.value,
+        //     password: password!.value,
+        //     email: email!.value,
+        //   },
+        // );
+        redirect("/");
       })
       .catch((err) => {
         if (err.response.status == 400) {

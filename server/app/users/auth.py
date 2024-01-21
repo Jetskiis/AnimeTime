@@ -9,7 +9,8 @@ def authenticate(username = None, password = None):
             return user
     except User.DoesNotExist:
         return None
-    
+
+
 def get_user(user_id):
     try:
         return User.objects.get(pk = user_id)

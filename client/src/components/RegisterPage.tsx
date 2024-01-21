@@ -1,9 +1,11 @@
 import axios from "axios";
 import React from "react";
-import { redirect } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 // import useLoggedInStatus from "../api/checkLogin";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const url = import.meta.env.VITE_BACKEND_URL + "/api/register";
     const email: HTMLInputElement | null = document.querySelector(
@@ -40,17 +42,17 @@ const RegisterForm = () => {
         email: email!.value,
       })
       .then(async (res) => {
-        // await axios.post(
-        //   import.meta.env.VITE_BACKEND_URL + "/api/login",
-        //   {
-        //     username: username!.value,
-        //     password: password!.value,
-        //     email: email!.value,
-        //   },
-        // );
-        redirect("/");
+        await axios.post(
+          import.meta.env.VITE_BACKEND_URL + "/api/login",
+          {
+            username: username!.value,
+            password: password!.value,
+          },
+        );
+        navigate("/");
       })
       .catch((err) => {
+        console.log(err.response);
         if (err.response.status == 400) {
           if (err.response.data == "Email already exists") {
             email!.setCustomValidity("Email already exists");
@@ -60,6 +62,11 @@ const RegisterForm = () => {
           if (err.response.data == "Username already exists") {
             username!.setCustomValidity("Username already exists");
             username!.reportValidity();
+            return;
+          }
+          if(err.response.data == "Invalid email"){
+            email!.setCustomValidity("Invalid email");
+            email!.reportValidity();
             return;
           }
         }

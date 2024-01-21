@@ -1,9 +1,11 @@
 import axios from "axios";
 import React from "react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import useLoggedInStatus from "../api/checkLogin";
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+  
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const url = import.meta.env.VITE_BACKEND_URL + "/api/login";
     const username: HTMLInputElement | null = document.querySelector(
@@ -16,18 +18,14 @@ const LoginForm = () => {
     e.preventDefault();
 
     await axios
-      .post(
-        url,
-        { username: username!.value, password: password!.value },
-        { withCredentials: true }
-      )
+      .post(url, { username: username!.value, password: password!.value })
       .then((res) => {
-        if (res.data.success) {
-          redirect("/");
+        if (res.data === "success") {
+          navigate("/");
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.response);
         if (
           err.response &&
           err.response.status == 400 &&
@@ -112,11 +110,8 @@ const LoginForm = () => {
               Login
             </button>
 
-            <div className="text-black text-center mt-3">
-              <a
-                className="hover:opacity-80"
-                href="/reset-password"
-              >
+            <div className="mt-3 text-center text-black">
+              <a className="hover:opacity-80" href="/reset-password">
                 Forgot Password?
               </a>
             </div>

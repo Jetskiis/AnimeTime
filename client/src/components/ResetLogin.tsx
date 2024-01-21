@@ -1,10 +1,12 @@
 import axios from "axios";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ResetLogin = () => {
+
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = import.meta.env.VITE_BACKEND_URL + "/api/login";
+    const url = import.meta.env.VITE_BACKEND_URL + "/api/reset";
     const email: HTMLInputElement | null = document.querySelector(
       'input[name="email"]'
     );
@@ -17,7 +19,7 @@ const ResetLogin = () => {
     await axios
       .post(url, { username: username!.value, email: email!.value })
       .then((res) => {
-        if (res.data.success) {
+        if (res.data == "success") {
           return (
             <div className="fw-bold h-screen pt-32 text-center text-5xl">
               <h1>Email Sent!</h1>
@@ -42,7 +44,7 @@ const ResetLogin = () => {
           err.response.status == 400 &&
           err.response.data == "Email not found"
         ) {
-          email!.setCustomValidity("Incorrect password");
+          email!.setCustomValidity("Email not found for this username");
           email!.reportValidity();
           return;
         }

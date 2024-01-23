@@ -30,7 +30,7 @@ def register_user(request):
         user = User.objects.create(username=serializer.data['username'], password=make_password(
             serializer.data['password']), email=serializer.data['email'])
         user.save()
-        send_register_email(serializer.data['email'])
+        send_register_email(serializer.data['username'],serializer.data['email'])
         return Response(status=status.HTTP_201_CREATED)
     else:
         if match_username:

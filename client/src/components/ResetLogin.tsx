@@ -1,10 +1,8 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 const ResetLogin = () => {
-
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const url = import.meta.env.VITE_BACKEND_URL + "/api/reset";
     const email: HTMLInputElement | null = document.querySelector(
@@ -20,12 +18,7 @@ const ResetLogin = () => {
       .post(url, { username: username!.value, email: email!.value })
       .then((res) => {
         if (res.data == "success") {
-          return (
-            <div className="fw-bold h-screen pt-32 text-center text-5xl">
-              <h1>Email Sent!</h1>
-              <Link to="">Log back in.</Link>
-            </div>
-          );
+          setHasSentResetEmail(true);
         }
       })
       .catch((err) => {
@@ -52,12 +45,20 @@ const ResetLogin = () => {
   };
 
   // const {isLoggedIn, user} = useLoggedInStatus();
+  const [hasSentResetEmail, setHasSentResetEmail] = useState(false);
   const isLoggedIn = false;
 
   if (isLoggedIn) {
     return (
       <div className="fw-bold h-screen pt-32 text-center text-5xl">
         <h1>You are already logged in!</h1>
+      </div>
+    );
+  } else if (hasSentResetEmail) {
+    return (
+      <div className="fw-bold h-screen pt-40 text-center text-5xl">
+        <h1>Password reset email sent!</h1>
+        <Link className="text-blue-700 underline underline-offset-8" to="/login">Log back in.</Link>
       </div>
     );
   } else {
@@ -113,6 +114,7 @@ const ResetLogin = () => {
             >
               Reset Password
             </button>
+            <span className="italic">feature not implemented yet, don't use it</span>
           </div>
         </div>
       </div>

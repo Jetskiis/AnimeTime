@@ -57,10 +57,37 @@ if (month >= 0 && month <= 2) {
 }
 
 const seasonDates: any = {
-  "Winter": "January",
-  "Spring": "April",
-  "Summer": "July",
-  "Fall": "October",
+  Winter: "January",
+  Spring: "April",
+  Summer: "July",
+  Fall: "October",
+};
+
+const isPrevSeason = (month: number, year: number) => {
+  let season;
+  if (month >= 0 && month <= 2) {
+    season = "Winter";
+  } else if (month >= 3 && month <= 5) {
+    season = "Spring";
+  } else if (month >= 6 && month <= 8) {
+    season = "Summer";
+  } else if (month >= 9 && month <= 11) {
+    season = "Fall";
+  }
+  if (season == seasonInfo.firstSeason.season && year == seasonInfo.firstSeason.year) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const isCurrentSeason = (season: string, year: number) => {
+
+  if (season == seasonInfo.firstSeason.season && year == seasonInfo.firstSeason.year) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-export {seasonInfo, seasonDates};
+export { isPrevSeason, seasonDates, seasonInfo, isCurrentSeason };

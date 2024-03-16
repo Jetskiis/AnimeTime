@@ -1,4 +1,5 @@
 import pThrottle from "p-throttle";
+import { isPrevSeason, isCurrentSeason } from "../modules/Season";
 
 const throttle = pThrottle({
   limit: 1,
@@ -42,32 +43,13 @@ const getData = async (
         ) //removes hentai from results
         .map(async (anime: any) => {
           //get continuing shows from previous season
-          if(animeID.has(anime.mal_id)) return;
+          if (animeID.has(anime.mal_id)) return;
+          const startMonth = Number(anime.aired.prop.from["month"]);
+          const startYear = Number(anime.aired.prop.from["year"]);
 
           if (previousSeason == true) {
-            if (anime.episodes >= 15) {
-              animeList.push({
-                season: season,
-                year: year,
-                id: anime.mal_id,
-                episodes: anime.episodes,
-                genres: anime.genres,
-                score: anime.score,
-                title: anime.title,
-                synopsis: anime.synopsis,
-                studios: anime.studios,
-                source: anime.source,
-                images: anime.images,
-                members: anime.members,
-                broadcast: anime.broadcast,
-                aired: anime.aired,
-                isCurrentlyAiring: anime.status,
-                isPrevSeason: true,
-              });
-              animeID.add(anime.mal_id);
-            }
-          } else {
-            //get shows that have not previously aired before (could be this season/future seasons)
+            //get shows that are currently airing from previous season (continuing shows for current season)
+            if (anime.status === "Currently Airing") {
             animeList.push({
               season: season,
               year: year,
@@ -84,16 +66,41 @@ const getData = async (
               broadcast: anime.broadcast,
               aired: anime.aired,
               isCurrentlyAiring: anime.status,
-              isPrevSeason: false,
+              isPrevSeason: true,
             });
             animeID.add(anime.mal_id);
+            }
+          } else {
+            //get shows that have not previously aired before (could be this season/future seasons)
+            if ((isCurrentSeason(season, year) && !isPrevSeason(startMonth, startYear)) || !isCurrentSeason(season, year)) { 
+              //if the current page is for the current season then check to make sure its not a continuing show
+              animeList.push({
+                season: season,
+                year: year,
+                id: anime.mal_id,
+                episodes: anime.episodes,
+                genres: anime.genres,
+                score: anime.score,
+                title: anime.title,
+                synopsis: anime.synopsis,
+                studios: anime.studios,
+                source: anime.source,
+                images: anime.images,
+                members: anime.members,
+                broadcast: anime.broadcast,
+                aired: anime.aired,
+                isCurrentlyAiring: anime.status,
+                isPrevSeason: false,
+              });
+              animeID.add(anime.mal_id);
+            }
           }
         });
 
       page++;
       // console.log(data);
     }
-    // console.log(animeList);
+    console.log(animeList);
   } catch (error) {
     console.error(error);
   }

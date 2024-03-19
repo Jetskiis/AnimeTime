@@ -1,19 +1,19 @@
 import "./App.css";
 
 import {
-  BrowserRouter as Router,
   Navigate,
   Route,
+  BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
 import CardView from "./components/CardView";
 import Footer from "./components/Footer";
+import LoginForm from "./components/LoginPage";
 import Navbar from "./components/Navbar";
 import RegisterForm from "./components/RegisterPage";
-import LoginForm from "./components/LoginPage";
 import ResetLogin from "./components/ResetLogin";
 import { seasonInfo } from "./modules/Season";
-
+import axios from "axios";
 
 const App = () => {
   const firstSeason = seasonInfo.firstSeason;
@@ -51,7 +51,7 @@ const App = () => {
               <CardView season={thirdSeason.season} year={thirdSeason.year} />
             }
           />
-          
+
           <Route
             path={`/${fourthSeason.year}/${fourthSeason.season}`}
             element={
@@ -59,17 +59,10 @@ const App = () => {
             }
           />
 
-          <Route
-            path={'/login'}
-            element={<LoginForm />}
-          />
+          <Route path={"/login"} element={<LoginForm />} />
 
-          <Route 
-          path={'/register'}
-          element={<RegisterForm />}
-          />
-          <Route path={'/reset-password'} element={<ResetLogin/>}/>
-
+          <Route path={"/register"} element={<RegisterForm />} />
+          <Route path={"/reset-password"} element={<ResetLogin />} />
         </Routes>
         <Footer />
       </Router>

@@ -1,8 +1,12 @@
-import { BsMoon } from "react-icons/bs";
+import axios from "axios";
+import { useEffect } from "react";
+import { BsArrowCounterclockwise, BsGear, BsMoon } from "react-icons/bs";
 import { LuLogIn } from "react-icons/lu";
 import { MdOutlineViewWeek } from "react-icons/md";
+import { VscCircleLarge } from "react-icons/vsc";
 import { Link, useLocation } from "react-router-dom";
 import { seasonInfo } from "../modules/Season";
+import Cookies from "universal-cookie";
 
 //navbar
 
@@ -11,12 +15,28 @@ const Navbar = () => {
   const location = useLocation();
   let [year, season] = location.pathname.split("/").slice(1);
 
+  const isLoggedIn = false;
+  const url = import.meta.env.VITE_BACKEND_URL + "/api/users";
+  
+  
+  useEffect(() => {
+    (async () => {
+      axios
+        .get(url, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+
+        .then((res) => {});
+    })();
+  }, [location]);
+
   return (
-    <nav className=" bg-gray-700 px-5 py-6 text-white">
+    <nav className=" bg-gray-700 px-5 py-6 text-white sm:hidden smx:block">
       <div className="flex w-full cursor-pointer flex-row items-center justify-around">
-        <h2 className="text-2xl font-bold italic text-cyan-200 opacity-0 smx:opacity-100">
-          AnimeTime
-        </h2>
+        <h2 className="text-2xl font-bold italic text-cyan-200  ">AnimeTime</h2>
         <ul className="flex flex-row items-center justify-center text-lg font-medium">
           <li
             className={`mx-3 ${
@@ -67,10 +87,16 @@ const Navbar = () => {
             <MdOutlineViewWeek className="mb-0.5 " />
             Weekly
           </li>
-          {/* <li className="mx-1.5 flex flex-col items-center">
+          {
+            <li className="mx-1.5 flex flex-col items-center hover:opacity-70">
+              <VscCircleLarge className="mb-0.5" />
+              {/* username */}
+            </li>
+          }
+          <li className="mx-1.5 flex flex-col items-center">
             <BsGear className="mb-0.5" />
             Settings
-          </li> */}
+          </li>
           <li className="mx-1.5 flex flex-col items-center justify-center hover:opacity-70">
             <Link className="underline underline-offset-4" to="/login">
               <LuLogIn className="ml-2 mb-0.5" color="red" />

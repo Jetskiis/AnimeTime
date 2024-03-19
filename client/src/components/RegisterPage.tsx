@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { redirect, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
 // import useLoggedInStatus from "../api/checkLogin";
 
 const RegisterForm = () => {
@@ -36,11 +37,20 @@ const RegisterForm = () => {
     e.preventDefault();
 
     await axios
-      .post(url, {
-        username: username!.value,
-        password: password!.value,
-        email: email!.value,
-      })
+      .post(
+        url,
+        {
+          username: username!.value,
+          password: password!.value,
+          email: email!.value,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+        }
+      )
       .then(async (res) => {
         await axios.post(
           import.meta.env.VITE_BACKEND_URL + "/api/login",
@@ -48,6 +58,7 @@ const RegisterForm = () => {
             username: username!.value,
             password: password!.value,
           },
+          { withCredentials: true }
         );
         navigate("/");
       })
@@ -64,7 +75,7 @@ const RegisterForm = () => {
             username!.reportValidity();
             return;
           }
-          if(err.response.data == "Invalid email"){
+          if (err.response.data == "Invalid email") {
             email!.setCustomValidity("Invalid email");
             email!.reportValidity();
             return;

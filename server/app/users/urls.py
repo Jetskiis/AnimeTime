@@ -22,9 +22,9 @@ from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users', views.get_users),
+    path('api/users', views.get_user),
     path('api/register', views.register_user),
     path('api/login', views.login_user),
     path('api/reset', views.reset_password),
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
 ]

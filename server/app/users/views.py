@@ -1,25 +1,26 @@
 from users.email import send_register_email, send_reset_email
 
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
-from rest_framework import serializers, status
-from rest_framework.decorators import api_view
+from rest_framework import serializers, status, permissions, status
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
-from users.auth import authenticate
-from users.models import User
 from users.serializers import UserSerializer
+from django.contrib.auth.models import User
+from rest_framework.authentication import BasicAuthentication
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 @api_view(['GET'])
-def get_users(request):
-    # users = User.objects.all()
-    # serializer = UserSerializer(users, many=False)
-    # return Response(serializer.data)
-    return Response('Hello World')
+@authentication_classes([BasicAuthentication])
+@ensure_csrf_cookie
+def get_user(request):
+    print(request.user.is_authenticated)
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
+@authentication_classes([BasicAuthentication])
 def register_user(request):
     match_username = User.objects.all().filter(
         username=request.data['username'])
@@ -30,8 +31,9 @@ def register_user(request):
         user = User.objects.create(username=serializer.data['username'], password=make_password(
             serializer.data['password']), email=serializer.data['email'])
         user.save()
-        send_register_email(serializer.data['username'],serializer.data['email'])
-        return Response(status=status.HTTP_201_CREATED)
+        send_register_email(
+            serializer.data['username'], serializer.data['email'])
+        return Response(status=status.HTTP_201_CREATED, data=UserSerializer(user).data)
     else:
         if match_username:
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Username already exists')
@@ -42,6 +44,7 @@ def register_user(request):
 
 
 @api_view(['POST'])
+@authentication_classes([BasicAuthentication])
 def login_user(request):
     username = User.objects.all().filter(username=request.data['username'])
 
@@ -53,12 +56,14 @@ def login_user(request):
 
     if user is not None:
         login(request, user)
-        return Response(status=status.HTTP_200_OK, data='success')
+        return Response(status=status.HTTP_200_OK, data=UserSerializer(user).data)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST, data='Incorrect password')
 
 
+# not fully implemented yet
 @api_view(['POST'])
+@authentication_classes([BasicAuthentication])
 def reset_password(request):
     username = User.objects.all().filter(username=request.data['username'])
     email = User.objects.all().filter(

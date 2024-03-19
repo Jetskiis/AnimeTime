@@ -1,6 +1,0 @@
-{
-  "executionEnvironments": [{ "root": "src" }],
-  "include": ["users"],
-  "venv": "anichart",
-  "venvPath": "/home/gene/.pyenv/versions/3.12.0/envs/anichart"
-}

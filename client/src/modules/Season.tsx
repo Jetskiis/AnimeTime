@@ -82,7 +82,6 @@ const isPrevSeason = (month: number, year: number) => {
 };
 
 const isCurrentSeason = (season: string, year: number) => {
-
   if (season == seasonInfo.firstSeason.season && year == seasonInfo.firstSeason.year) {
     return true;
   } else {

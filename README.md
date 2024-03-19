@@ -1,6 +1,6 @@
 Created with:  
   - React, TypeScript, React Router, TailwindCSS, Framer Motion (Front End) 
-  - Python, Django with REST Framework, PostgreSQL (Back End) 
+  - NextJS with Prisma on the backend 
 
 <b>Site: </b> [AnimeTime](https://anime-time-mu.vercel.app)
 
@@ -16,7 +16,7 @@ Uses the JIKAN API (MyAnimeList Scraper) and AnimeSchedule.net API for seasonal 
 - Potential issues with exact times the shows air (not sure if this is an issue with the API or not)
 - Long running continuing anime (like One Piece) don't show up due to how the Jikan API works
 
-<u>Warning:</u> This site might break if there are API changes.
+<u>Warning:</u> This site might break if there are API changes. I'm not actively maintaining this project.
 
 <u>Images:</u>
 ![anitime-img-1](https://user-images.githubusercontent.com/31109249/226437621-427b862b-e1a7-4124-bc0c-627c0efbcb3a.png)

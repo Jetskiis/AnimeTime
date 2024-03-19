@@ -100,7 +100,7 @@ const getData = async (
       page++;
       // console.log(data);
     }
-    console.log(animeList);
+    // console.log(animeList);
   } catch (error) {
     console.error(error);
   }

@@ -18,7 +18,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     await axios
-      .post(url, { username: username!.value, password: password!.value })
+      .post(url, { username: username!.value, password: password!.value }, { withCredentials: true })
       .then((res) => {
         if (res.data === "success") {
           navigate("/");
@@ -115,6 +115,7 @@ const LoginForm = () => {
                 Forgot Password?
               </a>
             </div>
+
           </div>
 
           <div className="text-grey-dark mt-6">

@@ -1,37 +1,40 @@
+"use client";
+
 import axios from "axios";
 import { useEffect } from "react";
 import { BsArrowCounterclockwise, BsGear, BsMoon } from "react-icons/bs";
 import { LuLogIn } from "react-icons/lu";
 import { MdOutlineViewWeek } from "react-icons/md";
 import { VscCircleLarge } from "react-icons/vsc";
-import { Link, useLocation } from "react-router-dom";
+import {usePathname} from "next/navigation"; 
+import Link from "next/link";
 import { seasonInfo } from "../modules/Season";
-import Cookies from "universal-cookie";
 
 //navbar
 
+
 const Navbar = () => {
   const { firstSeason, secondSeason, thirdSeason, fourthSeason } = seasonInfo;
-  const location = useLocation();
-  let [year, season] = location.pathname.split("/").slice(1);
+  const location = usePathname();
+  let [year, season] = location.split("/").slice(1);
 
   const isLoggedIn = false;
-  const url = import.meta.env.VITE_BACKEND_URL + "/api/users";
+  // const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/users";
   
   
-  useEffect(() => {
-    (async () => {
-      axios
-        .get(url, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+  // useEffect(() => {
+  //   (async () => {
+  //     axios
+  //       .get(url, {
+  //         withCredentials: true,
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       })
 
-        .then((res) => {});
-    })();
-  }, [location]);
+  //       .then((res) => {});
+  //   })();
+  // }, [location]);
 
   return (
     <nav className=" bg-gray-700 px-5 py-6 text-white sm:hidden smx:block">
@@ -43,7 +46,7 @@ const Navbar = () => {
               season == firstSeason.season ? "text-white" : "text-gray-300"
             }  text-center hover:text-slate-400`}
           >
-            <Link to={`${firstSeason.year}/${firstSeason.season}`}>
+            <Link href={`/${firstSeason.year}/${firstSeason.season}`}>
               {" "}
               {firstSeason.season} {firstSeason.year}{" "}
             </Link>
@@ -53,7 +56,7 @@ const Navbar = () => {
               season == secondSeason.season ? "text-white" : "text-gray-300"
             }  text-center hover:text-slate-400`}
           >
-            <Link to={`${secondSeason.year}/${secondSeason.season}`}>
+            <Link href={`/${secondSeason.year}/${secondSeason.season}`}>
               {secondSeason.season} {secondSeason.year}
             </Link>
           </li>
@@ -62,7 +65,7 @@ const Navbar = () => {
               season == thirdSeason.season ? "text-white" : "text-gray-300"
             }  text-center hover:text-slate-400`}
           >
-            <Link to={`${thirdSeason.year}/${thirdSeason.season}`}>
+            <Link href={`/${thirdSeason.year}/${thirdSeason.season}`}>
               {thirdSeason.season} {thirdSeason.year}
             </Link>
           </li>
@@ -71,7 +74,7 @@ const Navbar = () => {
               season == fourthSeason.season ? "text-white" : "text-gray-300"
             }  text-center hover:text-slate-400`}
           >
-            <Link to={`${fourthSeason.year}/${fourthSeason.season}`}>
+            <Link href={`/${fourthSeason.year}/${fourthSeason.season}`}>
               {fourthSeason.season} {fourthSeason.year}
             </Link>
           </li>
@@ -98,7 +101,7 @@ const Navbar = () => {
             Settings
           </li>
           <li className="mx-1.5 flex flex-col items-center justify-center hover:opacity-70">
-            <Link className="underline underline-offset-4" to="/login">
+            <Link className="underline underline-offset-4" href="/login">
               <LuLogIn className="ml-2 mb-0.5" color="red" />
               Login
             </Link>

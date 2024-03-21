@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,7 +23,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "sourceMap": true /* Create source map files for emitted JavaScript files. */,
     /* Type Checking */
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
@@ -26,9 +35,21 @@
     "noUnusedLocals": false /* Enable error reporting when local variables aren't read. */,
     "noUnusedParameters": false /* Raise an error when a function parameter isn't read. */,
     "noImplicitReturns": true /* Enable error reporting for codepaths that do not explicitly return in a function. */,
-    "noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */
+    "noFallthroughCasesInSwitch": true /* Enable error reporting for fallthrough cases in switch statements. */,
+    "incremental": true
   },
-  "exclude": ["node_modules"],
-  "include": ["src", "./src/**/*.tsx", "./src/**/*/.ts", "*tsx","*.tsx", "*.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src",
+    "./src/**/*.tsx",
+    "./src/**/*/.ts",
+    "*tsx",
+    "*.tsx",
+    "*.ts",
+    "./dist/types/**/*.ts",
+    "./next-env.d.ts",
+    ".next/types/**/*.ts"
+  ]
 }

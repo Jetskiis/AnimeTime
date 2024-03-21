@@ -169,7 +169,9 @@ const Card = ({
         return (
           <>
             Airing Date:
-            <p className="text-base font-medium leading-none mb-1">To Be Determined</p>
+            <p className="mb-1 text-base font-medium leading-none">
+              To Be Determined
+            </p>
           </>
         );
       } else {
@@ -185,6 +187,8 @@ const Card = ({
           </>
         );
       }
+    } else {
+      return <></>;
     }
   };
 

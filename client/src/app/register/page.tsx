@@ -1,14 +1,14 @@
+"use client"
+
 import axios from "axios";
 import React from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-// import useLoggedInStatus from "../api/checkLogin";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const RegisterForm = () => {
-  const navigate = useNavigate();
 
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = import.meta.env.VITE_BACKEND_URL + "/api/register";
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/register";
     const email: HTMLInputElement | null = document.querySelector(
       'input[name="email"]'
     );
@@ -48,19 +48,18 @@ const RegisterForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
-
         }
       )
       .then(async (res) => {
         await axios.post(
-          import.meta.env.VITE_BACKEND_URL + "/api/login",
+          process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login",
           {
             username: username!.value,
             password: password!.value,
           },
           { withCredentials: true }
         );
-        navigate("/");
+        redirect("/");
       })
       .catch((err) => {
         console.log(err.response);
@@ -199,12 +198,12 @@ const RegisterForm = () => {
 
           <div className="text-grey-dark mt-6">
             Already have an account?
-            <a
+            <Link
               className="border-blue text-blue ml-1 border-b no-underline"
               href="/login"
             >
               Log in
-            </a>
+            </Link>
             .
           </div>
         </div>

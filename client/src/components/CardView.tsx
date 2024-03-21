@@ -1,3 +1,5 @@
+"use client";
+
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useReducer, useRef, useState } from "react";
 import getData from "../api/getData";
@@ -104,7 +106,6 @@ const CardView = ({ season, year }: CardViewProps) => {
         });
         setIsLoading(false);
       }
-
     }
     getAnimeList();
   }, [season, year, sortType]);

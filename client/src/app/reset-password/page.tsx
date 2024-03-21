@@ -1,10 +1,12 @@
+"use client"
+
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import  Link from "next/link";
 
 const ResetLogin = () => {
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = import.meta.env.VITE_BACKEND_URL + "/api/reset";
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/reset";
     const email: HTMLInputElement | null = document.querySelector(
       'input[name="email"]'
     );
@@ -58,7 +60,12 @@ const ResetLogin = () => {
     return (
       <div className="fw-bold h-screen pt-40 text-center text-5xl">
         <h1>Password reset email sent!</h1>
-        <Link className="text-blue-700 underline underline-offset-8" to="/login">Log back in.</Link>
+        <Link
+          className="text-blue-700 underline underline-offset-8"
+          href="/login"
+        >
+          Log back in.
+        </Link>
       </div>
     );
   } else {
@@ -114,7 +121,9 @@ const ResetLogin = () => {
             >
               Reset Password
             </button>
-            <span className="italic">feature not implemented yet, don't use it</span>
+            <span className="italic">
+              feature not implemented yet, don't use it
+            </span>
           </div>
         </div>
       </div>

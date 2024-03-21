@@ -1,13 +1,14 @@
+"use client"
+
 import axios from "axios";
 import React from "react";
-import { useNavigate } from "react-router-dom";
-// import useLoggedInStatus from "../api/checkLogin";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const LoginForm = () => {
-  const navigate = useNavigate();
   
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = import.meta.env.VITE_BACKEND_URL + "/api/login";
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login";
     const username: HTMLInputElement | null = document.querySelector(
       'input[name="username"]'
     );
@@ -21,7 +22,7 @@ const LoginForm = () => {
       .post(url, { username: username!.value, password: password!.value }, { withCredentials: true })
       .then((res) => {
         if (res.data === "success") {
-          navigate("/");
+          redirect("/");
         }
       })
       .catch((err) => {
@@ -111,21 +112,21 @@ const LoginForm = () => {
             </button>
 
             <div className="mt-3 text-center text-black">
-              <a className="hover:opacity-80" href="/reset-password">
+              <Link className="hover:opacity-80" href="/reset-password">
                 Forgot Password?
-              </a>
+              </Link>
             </div>
 
           </div>
 
           <div className="text-grey-dark mt-6">
             Don't have an account?
-            <a
+            <Link
               className="border-blue text-blue ml-1 border-b no-underline"
               href="/register"
             >
               Register now
-            </a>
+            </Link>
             .
           </div>
         </div>

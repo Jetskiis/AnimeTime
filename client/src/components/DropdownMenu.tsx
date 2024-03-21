@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AiFillCaretDown } from "react-icons/ai";
 
 interface dropdownMenuProps {
@@ -24,7 +25,7 @@ const DropdownMenu = (props: dropdownMenuProps) => {
       >
         <ul className="text-sm text-gray-700 dark:text-gray-200">
           <li>
-            <a
+            <Link
               href="#"
               className="block rounded-md px-4 py-1 text-sm font-medium hover:bg-blue-400 hover:text-white"
               onClick={() => {
@@ -33,8 +34,8 @@ const DropdownMenu = (props: dropdownMenuProps) => {
               }}
             >
               Score
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-4 py-1 text-sm font-medium hover:bg-blue-400 hover:text-white"
               onClick={() => {
@@ -43,8 +44,8 @@ const DropdownMenu = (props: dropdownMenuProps) => {
               }}
             >
               Popularity
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-4 py-1 text-sm font-medium hover:bg-blue-400 hover:text-white"
               onClick={() => {
@@ -53,8 +54,8 @@ const DropdownMenu = (props: dropdownMenuProps) => {
               }}
             >
               Title
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-4 py-1 text-sm font-medium hover:bg-blue-400 hover:text-white"
               onClick={() => {
@@ -63,8 +64,8 @@ const DropdownMenu = (props: dropdownMenuProps) => {
               }}
             >
               Studio
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-4 py-1 text-sm font-medium hover:bg-blue-400 hover:text-white"
               onClick={() => {
@@ -73,7 +74,7 @@ const DropdownMenu = (props: dropdownMenuProps) => {
               }}
             >
               Start Date
-            </a>
+            </Link>
           </li>
         </ul>
       </div>

@@ -22,9 +22,6 @@ const getData = async (
   previousSeason: boolean
 ) => {
   let animeList: any = [];
-  //api key
-  // let token = import.meta.env.VITE_ANIMESCHEDULE_TOKEN;
-
   try {
     let page = 1;
     let res = await fetchFn(page, season, year, category);

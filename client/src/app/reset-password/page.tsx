@@ -16,34 +16,34 @@ const ResetLogin = () => {
 
     e.preventDefault();
 
-    await axios
-      .post(url, { username: username!.value, email: email!.value })
-      .then((res) => {
-        if (res.data == "success") {
-          setHasSentResetEmail(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        if (
-          err.response &&
-          err.response.status == 400 &&
-          err.response.data == "Username not found"
-        ) {
-          username!.setCustomValidity("Username not found");
-          username!.reportValidity();
-          return;
-        }
-        if (
-          err.response &&
-          err.response.status == 400 &&
-          err.response.data == "Email not found"
-        ) {
-          email!.setCustomValidity("Email not found for this username");
-          email!.reportValidity();
-          return;
-        }
-      });
+    // await axios
+    //   .post(url, { username: username!.value, email: email!.value })
+    //   .then((res) => {
+    //     if (res.data == "success") {
+    //       setHasSentResetEmail(true);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     if (
+    //       err.response &&
+    //       err.response.status == 400 &&
+    //       err.response.data == "Username not found"
+    //     ) {
+    //       username!.setCustomValidity("Username not found");
+    //       username!.reportValidity();
+    //       return;
+    //     }
+    //     if (
+    //       err.response &&
+    //       err.response.status == 400 &&
+    //       err.response.data == "Email not found"
+    //     ) {
+    //       email!.setCustomValidity("Email not found for this username");
+    //       email!.reportValidity();
+    //       return;
+    //     }
+    //   });
   };
 
   // const {isLoggedIn, user} = useLoggedInStatus();

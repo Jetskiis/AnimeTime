@@ -1,12 +1,15 @@
-"use client"
+"use client";
 
 import axios from "axios";
 import React from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+
+
+
+
 const LoginForm = () => {
-  
   const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login";
     const username: HTMLInputElement | null = document.querySelector(
@@ -18,34 +21,34 @@ const LoginForm = () => {
 
     e.preventDefault();
 
-    await axios
-      .post(url, { username: username!.value, password: password!.value }, { withCredentials: true })
-      .then((res) => {
-        if (res.data === "success") {
-          redirect("/");
-        }
-      })
-      .catch((err) => {
-        console.log(err.response);
-        if (
-          err.response &&
-          err.response.status == 400 &&
-          err.response.data == "Username not found"
-        ) {
-          username!.setCustomValidity("Username not found");
-          username!.reportValidity();
-          return;
-        }
-        if (
-          err.response &&
-          err.response.status == 400 &&
-          err.response.data == "Incorrect password"
-        ) {
-          password!.setCustomValidity("Incorrect password");
-          password!.reportValidity();
-          return;
-        }
-      });
+    // await axios
+    //   .post(url, { username: username!.value, password: password!.value }, { withCredentials: true })
+    //   .then((res) => {
+    //     if (res.data === "success") {
+    //       redirect("/");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response);
+    //     if (
+    //       err.response &&
+    //       err.response.status == 400 &&
+    //       err.response.data == "Username not found"
+    //     ) {
+    //       username!.setCustomValidity("Username not found");
+    //       username!.reportValidity();
+    //       return;
+    //     }
+    //     if (
+    //       err.response &&
+    //       err.response.status == 400 &&
+    //       err.response.data == "Incorrect password"
+    //     ) {
+    //       password!.setCustomValidity("Incorrect password");
+    //       password!.reportValidity();
+    //       return;
+    //     }
+    //   });
   };
 
   // const {isLoggedIn, user} = useLoggedInStatus();
@@ -116,7 +119,6 @@ const LoginForm = () => {
                 Forgot Password?
               </Link>
             </div>
-
           </div>
 
           <div className="text-grey-dark mt-6">

@@ -1,4 +1,3 @@
-"use server";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import { PrismaClient } from "@prisma/client";
 import { Lucia } from "lucia";
@@ -18,6 +17,7 @@ const lucia = new Lucia(adapter, {
   },
   getUserAttributes: (attributes) => {
     return {
+      id: attributes.id,
       email: attributes.email,
       username: attributes.username,
       password: attributes.hashed_password,
@@ -34,6 +34,7 @@ declare module "lucia" {
 }
 
 interface DatabaseUserAttributes {
+  id: string;
   email: string;
   username: string;
   hashed_password: string;

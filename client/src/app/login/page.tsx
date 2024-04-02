@@ -1,56 +1,40 @@
 "use client";
 
-import axios from "axios";
-import React from "react";
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import React from "react";
+import { login } from "../../actions/user";
 
+const handleFormSubmission = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault();
 
+  const form = document.getElementById("form") as HTMLFormElement;
 
+  if (validateClientInput().error) return;
 
+  const rval = await login(new FormData(form));
+};
+
+const validateClientInput = () => {
+  const username = document.querySelector(
+    'input[name="username"]'
+  ) as HTMLInputElement;
+  const password = document.querySelector(
+    'input[name="password"]'
+  ) as HTMLInputElement;
+
+  username!.setCustomValidity("");
+  password!.setCustomValidity("");
+
+  if (
+    !username.checkValidity() ||
+    !password.checkValidity()
+  ) {
+    return { error: "Invalid input" };
+  }
+  return { success: true };
+};
 
 const LoginForm = () => {
-  const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login";
-    const username: HTMLInputElement | null = document.querySelector(
-      'input[name="username"]'
-    );
-    const password: HTMLInputElement | null = document.querySelector(
-      'input[name="password"]'
-    );
-
-    e.preventDefault();
-
-    // await axios
-    //   .post(url, { username: username!.value, password: password!.value }, { withCredentials: true })
-    //   .then((res) => {
-    //     if (res.data === "success") {
-    //       redirect("/");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.response);
-    //     if (
-    //       err.response &&
-    //       err.response.status == 400 &&
-    //       err.response.data == "Username not found"
-    //     ) {
-    //       username!.setCustomValidity("Username not found");
-    //       username!.reportValidity();
-    //       return;
-    //     }
-    //     if (
-    //       err.response &&
-    //       err.response.status == 400 &&
-    //       err.response.data == "Incorrect password"
-    //     ) {
-    //       password!.setCustomValidity("Incorrect password");
-    //       password!.reportValidity();
-    //       return;
-    //     }
-    //   });
-  };
-
   // const {isLoggedIn, user} = useLoggedInStatus();
   const isLoggedIn = false;
 
@@ -99,15 +83,8 @@ const LoginForm = () => {
 
             <button
               type="submit"
-              formMethod="post"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                (document.querySelector(
-                  'input[name="username"]'
-                ) as HTMLInputElement)!.setCustomValidity("");
-                (document.querySelector(
-                  'input[name="password"]'
-                ) as HTMLInputElement)!.setCustomValidity("");
-                submitForm(e);
+                handleFormSubmission(e);
               }}
               className="hover:bg-green-dark mt-5 w-full rounded bg-red-500 py-3 text-center text-white hover:bg-red-600"
             >

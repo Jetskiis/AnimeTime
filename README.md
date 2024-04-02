@@ -1,6 +1,8 @@
 Created with:  
-  - React, TypeScript, React Router, TailwindCSS, Framer Motion (Front End) 
-  - NextJS with Prisma on the backend 
+  - React, TypeScript, NextJS, TailwindCSS, Framer Motion (Front End) 
+  - NextJS with Prisma to Postgres (Back End)
+  - Vercel for hosting
+
 
 <b>Site: </b> [AnimeTime](https://anime-time-mu.vercel.app)
 

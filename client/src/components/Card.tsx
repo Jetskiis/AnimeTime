@@ -222,8 +222,12 @@ const Card = ({
         <div className="grid h-full w-full grid-cols-5 grid-rows-6">
           <div className="relative col-span-2 row-span-6 ">
             <div className="absolute top-1 ml-0.5 flex flex-row items-center justify-center rounded-xl bg-gray-700/80 px-2 py-0.5 text-xs text-white ">
-              {score == null ? null : <AiOutlineStar className="mr-0.5" />}
-              {score == null ? null : <span className="mr-0.5">{score}</span>}
+              {score == null || score == 0 ? null : (
+                <AiOutlineStar className="mr-0.5" />
+              )}
+              {score == null || score == 0 ? null : (
+                <span className="mr-0.5">{score}</span>
+              )}
               <BsPersonFill className="ml-1" />
               {Math.ceil(members / 1000)}k
             </div>

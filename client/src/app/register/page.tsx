@@ -1,147 +1,95 @@
 "use client";
 
-import axios from "axios";
-import React from "react";
-import { redirect } from "next/navigation";
 import Link from "next/link";
-
-import { Argon2id } from "oslo/password";
-import { cookies } from "next/headers";
-import { generateId } from "lucia";
-import { PrismaClient } from "@prisma/client";
-
-import lucia from "../../actions/auth";
-
-interface ActionResult {
-  error: string;
-}
-
-const prisma = new PrismaClient();
-
-async function signup(_: any, formData: FormData): Promise<ActionResult> {
-  "use server";
-  const username = formData.get("username");
-  // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
-  // keep in mind some database (e.g. mysql) are case insensitive
-  if (
-    typeof username !== "string" ||
-    username.length < 3 ||
-    username.length > 31 ||
-    !/^[a-z0-9_-]+$/.test(username)
-  ) {
-    return {
-      error: "Invalid username",
-    };
-  }
-  const password = formData.get("password");
-  if (
-    typeof password !== "string" ||
-    password.length < 6 ||
-    password.length > 255
-  ) {
-    return {
-      error: "Invalid password",
-    };
-  }
-
-  const hashedPassword = await new Argon2id().hash(password);
-  const userId = generateId(15);
-
-  // TODO: check if username is already used
-  await prisma.table("user").insert({
-    id: userId,
-    username: username,
-    hashed_password: hashedPassword,
-  });
-
-  const session = await Lucia.createSession(userId, {});
-  const sessionCookie = Lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes
-  );
-  return redirect("/");
-}
+import { useEffect, useState } from "react";
+import { register } from "../../actions/user";
 
 const RegisterForm = () => {
-  const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/register";
-    const email: HTMLInputElement | null = document.querySelector(
-      'input[name="email"]'
+  const [email, setEmail] = useState<HTMLInputElement | null>(null);
+  const [username, setUsername] = useState<HTMLInputElement | null>(null);
+  const [password, setPassword] = useState<HTMLInputElement | null>(null);
+  const [confirm_password, setConfirmPassword] =
+    useState<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setEmail(document.querySelector('input[name="email"]') as HTMLInputElement);
+    setUsername(
+      document.querySelector('input[name="username"]') as HTMLInputElement
     );
-    const username: HTMLInputElement | null = document.querySelector(
-      'input[name="username"]'
+    setPassword(
+      document.querySelector('input[name="password"]') as HTMLInputElement
     );
-    const password: HTMLInputElement | null = document.querySelector(
-      'input[name="password"]'
+    setConfirmPassword(
+      document.querySelector(
+        'input[name="confirm_password"]'
+      ) as HTMLInputElement
     );
-    const confirm_password: HTMLInputElement | null = document.querySelector(
-      'input[name="confirm_password"]'
-    );
-    if (
-      !email!.checkValidity() ||
-      !username!.checkValidity() ||
-      !password!.checkValidity() ||
-      !confirm_password!.checkValidity()
-    ) {
-      return;
+  }, []);
+
+  const handleFormSubmission = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    const form = document.getElementById("form") as HTMLFormElement;
+
+    if (validateClientInput().error) return;
+
+    const rval = await register(new FormData(form));
+
+    if (rval && rval.error == "Email already in use") {
+      email!.setCustomValidity("Email already in use");
+      email!.reportValidity();
     }
+
+    if (rval && rval.error == "Username already in use") {
+      username!.setCustomValidity("Username already in use");
+      username!.reportValidity();
+    }
+  };
+
+  const validateClientInput = () => {
+    email!.setCustomValidity("");
+    username!.setCustomValidity("");
+    password!.setCustomValidity("");
+    confirm_password!.setCustomValidity("");
+
+    if (!email!.checkValidity()) {
+      email!.setCustomValidity(
+        "Email has to be between 3-25 characters and have an @ symbol"
+      );
+      email!.reportValidity();
+      return { error: "Invalid input" };
+    }
+    if (!username!.checkValidity()) {
+      username!.setCustomValidity("Username has to be between 3-15 characters");
+      username!.reportValidity();
+      return { error: "Invalid input" };
+    }
+    if (!password!.checkValidity()) {
+      password!.setCustomValidity(
+        "Password has to be between 5-20 characters and must match confirm password"
+      );
+      password!.reportValidity();
+      return { error: "Invalid input" };
+    }
+    if (!confirm_password!.checkValidity()) {
+      confirm_password!.setCustomValidity(
+        "Password has to be between 5-20 characters and must match confirm password"
+      );
+      confirm_password!.reportValidity();
+      return { error: "Invalid input" };
+    }
+
     if (password!.value !== confirm_password!.value) {
       confirm_password!.setCustomValidity("Passwords Don't Match");
       confirm_password!.reportValidity();
-      return;
+      return { error: "Passwords don't match" };
     }
-    e.preventDefault();
 
-    // await axios
-    //   .post(
-    //     url,
-    //     {
-    //       username: username!.value,
-    //       password: password!.value,
-    //       email: email!.value,
-    //     },
-    //     {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   )
-    //   .then(async (res) => {
-    //     await axios.post(
-    //       process.env.NEXT_PUBLIC_BACKEND_URL + "/api/login",
-    //       {
-    //         username: username!.value,
-    //         password: password!.value,
-    //       },
-    //       { withCredentials: true }
-    //     );
-    //     redirect("/");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.response);
-    //     if (err.response.status == 400) {
-    //       if (err.response.data == "Email already exists") {
-    //         email!.setCustomValidity("Email already exists");
-    //         email!.reportValidity();
-    //         return;
-    //       }
-    //       if (err.response.data == "Username already exists") {
-    //         username!.setCustomValidity("Username already exists");
-    //         username!.reportValidity();
-    //         return;
-    //       }
-    //       if (err.response.data == "Invalid email") {
-    //         email!.setCustomValidity("Invalid email");
-    //         email!.reportValidity();
-    //         return;
-    //       }
-    //     }
-    //   });
+    return { success: true };
   };
 
-  //   const {isLoggedIn,user} = useLoggedInStatus();
   const isLoggedIn = false;
 
   if (isLoggedIn) {
@@ -202,7 +150,7 @@ const RegisterForm = () => {
               minLength={5}
               maxLength={20}
               required
-              onChange={(e) => {
+              onChange={() => {
                 (
                   document.querySelector(
                     'input[name="password"]'
@@ -218,7 +166,7 @@ const RegisterForm = () => {
               minLength={5}
               maxLength={20}
               required
-              onChange={(e) => {
+              onChange={() => {
                 (
                   document.querySelector(
                     'input[name="confirm_password"]'
@@ -229,19 +177,8 @@ const RegisterForm = () => {
 
             <button
               type="submit"
-              formMethod="post"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                (
-                  document.querySelector(
-                    'input[name="confirm_password"]'
-                  ) as HTMLInputElement
-                ).setCustomValidity("");
-                (
-                  document.querySelector(
-                    'input[name="username"]'
-                  ) as HTMLInputElement
-                ).setCustomValidity("");
-                submitForm(e);
+                handleFormSubmission(e);
               }}
               className="hover:bg-green-dark w-full rounded bg-red-500 py-3 text-center text-white hover:bg-red-600"
             >

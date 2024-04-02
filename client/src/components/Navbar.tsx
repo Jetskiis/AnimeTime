@@ -1,40 +1,26 @@
 "use client";
 
-import axios from "axios";
-import { useEffect } from "react";
-import { BsArrowCounterclockwise, BsGear, BsMoon } from "react-icons/bs";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BsGear, BsMoon } from "react-icons/bs";
 import { LuLogIn } from "react-icons/lu";
 import { MdOutlineViewWeek } from "react-icons/md";
 import { VscCircleLarge } from "react-icons/vsc";
-import {usePathname} from "next/navigation"; 
-import Link from "next/link";
 import { seasonInfo } from "../modules/Season";
 
 //navbar
 
-
 const Navbar = () => {
   const { firstSeason, secondSeason, thirdSeason, fourthSeason } = seasonInfo;
   const location = usePathname();
-  let [year, season] = location.split("/").slice(1);
+  let [season, setSeason] = useState("");
 
-  const isLoggedIn = false;
-  // const url = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/users";
-  
-  
-  // useEffect(() => {
-  //   (async () => {
-  //     axios
-  //       .get(url, {
-  //         withCredentials: true,
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       })
-
-  //       .then((res) => {});
-  //   })();
-  // }, [location]);
+  useEffect(() => {
+    if (location.split("/").length > 1) {
+      setSeason(location.split("/").slice(1)[1]);
+    }
+  }, [location]);
 
   return (
     <nav className=" bg-gray-700 px-5 py-6 text-white sm:hidden smx:block">

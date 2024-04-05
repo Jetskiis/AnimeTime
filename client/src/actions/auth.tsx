@@ -20,7 +20,7 @@ const lucia = new Lucia(adapter, {
       id: attributes.id,
       email: attributes.email,
       username: attributes.username,
-      password: attributes.hashed_password,
+      //avoid returning password: hashed_password
     };
   },
 });

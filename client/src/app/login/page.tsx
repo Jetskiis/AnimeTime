@@ -1,41 +1,66 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import { useEffect, useState } from "react";
 import { login } from "../../actions/user";
 
-const handleFormSubmission = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  e.preventDefault();
 
-  const form = document.getElementById("form") as HTMLFormElement;
-
-  if (validateClientInput().error) return;
-
-  const rval = await login(new FormData(form));
-};
-
-const validateClientInput = () => {
-  const username = document.querySelector(
-    'input[name="username"]'
-  ) as HTMLInputElement;
-  const password = document.querySelector(
-    'input[name="password"]'
-  ) as HTMLInputElement;
-
-  username!.setCustomValidity("");
-  password!.setCustomValidity("");
-
-  if (
-    !username.checkValidity() ||
-    !password.checkValidity()
-  ) {
-    return { error: "Invalid input" };
-  }
-  return { success: true };
-};
 
 const LoginForm = () => {
-  // const {isLoggedIn, user} = useLoggedInStatus();
+  const [username, setUsername] = useState<HTMLInputElement | null>(null);
+  const [password, setPassword] = useState<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setUsername(
+      document.querySelector('input[name="username"]') as HTMLInputElement
+    );
+    setPassword(
+      document.querySelector('input[name="password"]') as HTMLInputElement
+    );
+  }, []);
+
+  const handleFormSubmission = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    const form = document.getElementById("form") as HTMLFormElement;
+
+    if (validateClientInput().error) return;
+
+    const rval = await login(new FormData(form));
+
+    if(rval && rval.error == "Username not found") {
+      username!.setCustomValidity("Invalid username");
+      username!.reportValidity();
+    }
+
+    if(rval && rval.error == "Incorrect password") {
+      password!.setCustomValidity("Incorrect password");
+      password!.reportValidity();
+    }
+  };
+
+  const validateClientInput = () => {
+    username!.setCustomValidity("");
+    password!.setCustomValidity("");
+
+    if (!username!.checkValidity()) {
+      username!.setCustomValidity("Username has to be between 3-15 characters");
+      username!.reportValidity();
+      return { error: "Invalid input" };
+    }
+    if (!password!.checkValidity()) {
+      password!.setCustomValidity(
+        "Password has to be between 5-20 characters and must match confirm password"
+      );
+      password!.reportValidity();
+      return { error: "Invalid input" };
+    }
+
+    return { success: true };
+  };
+
   const isLoggedIn = false;
 
   if (isLoggedIn) {
@@ -47,7 +72,7 @@ const LoginForm = () => {
   } else {
     return (
       <div className="flex min-h-screen flex-col bg-gray-100">
-        <div className="container mx-auto flex max-w-sm flex-1 flex-col items-center justify-center px-2">
+        <form className="container mx-auto flex max-w-sm flex-1 flex-col items-center justify-center px-2" id="form">
           <div className="w-full rounded bg-white px-6 py-8 text-black shadow-md">
             <h1 className="mb-8 text-center text-3xl font-bold">Log In</h1>
 
@@ -108,7 +133,7 @@ const LoginForm = () => {
             </Link>
             .
           </div>
-        </div>
+        </form>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-//registration, login, reset
+//user verification, registration, login, logout 
 "use server";
 import { PrismaClient } from "@prisma/client";
 import { generateId } from "lucia";
@@ -13,6 +13,8 @@ interface ActionResult {
   error?: string;
   success?: boolean;
 }
+
+
 
 export const register = async (form: FormData): Promise<ActionResult> => {
   let email: FormDataEntryValue | null = form.get("email");
@@ -68,37 +70,35 @@ export const register = async (form: FormData): Promise<ActionResult> => {
 };
 
 export const login = async (form: FormData): Promise<ActionResult> => {
-  // let username: FormDataEntryValue | null = form.get("username");
-  // let password: FormDataEntryValue | null = form.get("password");
+  let username: FormDataEntryValue | null = form.get("username");
+  let password: FormDataEntryValue | null = form.get("password");
 
-  // const checkUsername = await prisma.user.findFirst({
-  //   where: {
-  //     username: username as string,
-  //   },
-  // });
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      username: username as string,
+    },
+  });
 
-  // if (!checkUsername) {
-  //   username!.setCustomValidity("Username not found");
-  //   username!.reportValidity();
-  //   return { error: "Username not found" };
-  // }
+  if (!existingUser) {
+    return { error: "Username not found" };
+  }
 
-  // const validPassword = await new Argon2id().verify(
-  //   checkUsername.hashed_password,
-  //   password?.value || ""
-  // );
-  // if (!validPassword) {
-  //   return {
-  //     error: "Incorrect password",
-  //   };
-  // }
+  const validPassword = await new Argon2id().verify(
+    existingUser.hashed_password,
+    password as string
+  );
+  if (!validPassword) {
+    return {
+      error: "Incorrect password",
+    };
+  }
 
-  // const session = await lucia.createSession(existingUser.id, {});
-  // const sessionCookie = lucia.createSessionCookie(session.id);
-  // cookies().set(
-  //   sessionCookie.name,
-  //   sessionCookie.value,
-  //   sessionCookie.attributes
-  // );
+  const session = await lucia.createSession(existingUser.id, {});
+  const sessionCookie = lucia.createSessionCookie(session.id);
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
   return redirect("/");
 };

@@ -20,6 +20,7 @@ model User {
   hashed_password String
   UserList UserList[]
   Session Session?
+  @@map("user")
 }
 
 model Session {
@@ -27,6 +28,7 @@ model Session {
   userId    String @unique
   expiresAt DateTime
   user      User    @relation(fields: [userId], references: [id])
+  @@map("session")
 }
 
 model UserList {
@@ -34,6 +36,7 @@ model UserList {
   userId    String
   user      User    @relation(fields: [userId], references: [id])
   animelist Anime[]
+  @@map("user_list")
 }
 
 model Anime {
@@ -43,5 +46,6 @@ model Anime {
   // score    Float
   // status   String
   // episodes Int
-  userList UserList[]
+  userList UserList[] 
+  @@map("anime")
 }

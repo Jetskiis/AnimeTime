@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { login } from "../../actions/user";
-
+import {type User} from "lucia";
+import getUser from "../../hooks/useSessionStatus";
 
 
 const LoginForm = () => {
   const [username, setUsername] = useState<HTMLInputElement | null>(null);
   const [password, setPassword] = useState<HTMLInputElement | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setUsername(
@@ -17,6 +19,10 @@ const LoginForm = () => {
     setPassword(
       document.querySelector('input[name="password"]') as HTMLInputElement
     );
+    (async () =>{
+      const user = await getUser();
+      setUser(user);
+    })()
   }, []);
 
   const handleFormSubmission = async (
@@ -61,12 +67,12 @@ const LoginForm = () => {
     return { success: true };
   };
 
-  const isLoggedIn = false;
 
-  if (isLoggedIn) {
+  if (user) {
     return (
       <div className="fw-bold h-screen pt-32 text-center text-5xl">
         <h1>You are already logged in!</h1>
+        <Link href="/" className="underline text-blue-500">Go Home</Link>
       </div>
     );
   } else {

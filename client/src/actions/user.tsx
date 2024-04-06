@@ -1,11 +1,11 @@
-//user verification, registration, login, logout 
+//user registration, login, logout
 "use server";
 import { PrismaClient } from "@prisma/client";
 import { generateId } from "lucia";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Argon2id } from "oslo/password";
-import lucia from "../actions/auth";
+import lucia, {validateRequest} from "../actions/auth";
 
 const prisma = new PrismaClient();
 
@@ -13,8 +13,6 @@ interface ActionResult {
   error?: string;
   success?: boolean;
 }
-
-
 
 export const register = async (form: FormData): Promise<ActionResult> => {
   let email: FormDataEntryValue | null = form.get("email");
@@ -102,3 +100,23 @@ export const login = async (form: FormData): Promise<ActionResult> => {
   );
   return redirect("/");
 };
+
+//logout user
+async function logout(): Promise<ActionResult> {
+  const { session } = await validateRequest();
+  if (!session) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  await lucia.invalidateSession(session.id);
+
+  const sessionCookie = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
+  return redirect("/login");
+}

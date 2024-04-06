@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { register } from "../../actions/user";
+import getUser from "../../hooks/useSessionStatus";
+import {type User} from "lucia";
 
 const RegisterForm = () => {
   const [email, setEmail] = useState<HTMLInputElement | null>(null);
@@ -10,6 +12,7 @@ const RegisterForm = () => {
   const [password, setPassword] = useState<HTMLInputElement | null>(null);
   const [confirm_password, setConfirmPassword] =
     useState<HTMLInputElement | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     setEmail(document.querySelector('input[name="email"]') as HTMLInputElement);
@@ -24,6 +27,10 @@ const RegisterForm = () => {
         'input[name="confirm_password"]'
       ) as HTMLInputElement
     );
+    (async () =>{
+      const user = await getUser();
+      setUser(user);
+    })()
   }, []);
 
   const handleFormSubmission = async (
@@ -90,12 +97,12 @@ const RegisterForm = () => {
     return { success: true };
   };
 
-  const isLoggedIn = false;
 
-  if (isLoggedIn) {
+  if (user) {
     return (
       <div className="fw-bold h-screen pt-32 text-center text-5xl">
         <h1>You are already logged in!</h1>
+        <Link href="/" className="underline text-blue-500">Go Home</Link>
       </div>
     );
   } else {

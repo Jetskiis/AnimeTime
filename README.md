@@ -1,10 +1,9 @@
-work in progress - deployment may not load
+currently rewriting/migrating from django to nextjs  - deployment may not load
 
 Created with:  
   - React, TypeScript, NextJS, TailwindCSS, Framer Motion (Front End) 
   - NextJS with Prisma to Postgres (Back End)
   - Vercel for hosting
-
 
 <b>Site: </b> [AnimeTime](https://anime-time-mu.vercel.app)
 
@@ -12,15 +11,14 @@ Uses the JIKAN API (MyAnimeList Scraper) and AnimeSchedule.net API for seasonal 
 
 <u>Features</u>:
 - Gets all seasonal anime for 4 seasons: TV (current and continuing anime), movie, OVA, ONA, specials.
-  - Option to filter by various attributes
+  - Option to filter and search by various attributes
 - Create an account to save and keep track of shows you're interested in
 
 <u>Known Bugs</u>:
 - Current episode number not displayed
 - Potential issues with exact times the shows air (not sure if this is an issue with the API or not)
-- Long running continuing anime (like One Piece) don't show up due to how the Jikan API works
 
-<u>Warning:</u> This site might break if there are API changes. I'm not actively maintaining this project.
+<u>Warning:</u> This site might break if there are API changes.
 
 <u>Images:</u>
 ![anitime-img-1](https://user-images.githubusercontent.com/31109249/226437621-427b862b-e1a7-4124-bc0c-627c0efbcb3a.png)

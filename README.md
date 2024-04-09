@@ -1,3 +1,5 @@
+work in progress - deployment may not load
+
 Created with:  
   - React, TypeScript, NextJS, TailwindCSS, Framer Motion (Front End) 
   - NextJS with Prisma to Postgres (Back End)

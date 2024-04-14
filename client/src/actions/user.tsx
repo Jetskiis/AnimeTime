@@ -102,7 +102,7 @@ export const login = async (form: FormData): Promise<ActionResult> => {
 };
 
 //logout user
-async function logout(): Promise<ActionResult> {
+export async function logout(): Promise<ActionResult> {
   const { session } = await validateRequest();
   if (!session) {
     return {

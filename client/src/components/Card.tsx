@@ -247,7 +247,7 @@ const Card = ({
           </div>
 
           <div className="col-span-3 row-span-6 flex flex-col">
-            <ul className="row-span-1 flex flex-row items-center justify-center gap-x-1.5 bg-slate-100 p-1.5">
+            <ul className="row-span-1 flex flex-row items-center justify-center gap-x-1.5 bg-slate-200 p-1.5">
               {genres.map((genre: any, i: number) => {
                 if (i < 2) {
                   return (

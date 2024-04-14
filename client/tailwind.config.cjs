@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       fontSize: {
         xxs: ".7rem",
+        md: ".93rem"
       },
       screens: {
         smx: "700px",

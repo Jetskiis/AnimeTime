@@ -115,7 +115,7 @@ const CardView = ({ season, year }: CardViewProps) => {
   }
 
   return (
-    <div>
+    <div className="bg-gray-100">
       <div className="flex flex-row items-center justify-between">
         <h2 className="mb-1 px-5 pt-5 text-xl font-bold uppercase text-gray-600 ">
           TV

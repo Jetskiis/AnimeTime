@@ -33,7 +33,7 @@ const Navbar = () => {
   return (
     <nav className=" bg-gray-700 px-5 py-5 text-white sm:hidden smx:block">
       <div className="flex w-full cursor-pointer flex-row items-center justify-around">
-        <Link href="">
+        <Link href="/">
           <h2 className="text-2xl font-bold italic text-cyan-200  ">
             AnimeTime
           </h2>

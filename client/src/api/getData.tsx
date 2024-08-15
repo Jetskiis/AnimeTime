@@ -1,7 +1,7 @@
 "use server";
 
-import { ca } from "date-fns/locale";
 import pThrottle from "p-throttle";
+import { fetchCache, updateCache } from "./cacheData";
 
 const throttle = pThrottle({
   limit: 1,
@@ -38,17 +38,16 @@ const getDataWrapper = async (
   category: string,
   previousSeason: boolean
 ) => {
-  // const cache = await fetchCache(season, year, category);
+  const cache = await fetchCache(season, year, category);
 
-  // if (cache != false) {
-  //   console.log(cache);
-  //   return cache.anime;
-  // }
-  // else{
-  const data = await getData(season, year, category, previousSeason);
-  // updateCache(season, year, data, category);
-  return data;
-  // }
+  if (cache != false) {
+    return cache;
+  }
+  else{
+    const data = await getData(season, year, category, previousSeason);
+    updateCache(season, year, category, data);
+    return data;
+  }
 };
 
 const getData = async (

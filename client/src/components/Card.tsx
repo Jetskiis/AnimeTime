@@ -10,7 +10,8 @@ enum AiringStatus {
   "Not yet aired" = "Not yet aired",
 }
 
-interface cardProps {
+export type cardProps  = {
+  dbID: number;
   id: number;
   isCurrentlyAiring: AiringStatus;
   genres: any;
@@ -26,6 +27,9 @@ interface cardProps {
   synopsis: string;
   source: string;
   season: string;
+  //extra stuff for db
+  entry: string;
+  category: string;
 }
 
 //Calculate the time until the next episode in Days/Hours

@@ -1,5 +1,3 @@
-currently rewriting/migrating from django to nextjs  - deployment may not load
-
 Created with:  
   - React, TypeScript, NextJS, TailwindCSS, Framer Motion (Front End) 
   - NextJS with Prisma to Postgres (Back End)

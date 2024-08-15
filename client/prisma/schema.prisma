@@ -8,10 +8,10 @@ datasource db {
 }
 
 model User {
-  id       String        @id @unique
+  id       String     @id @unique
   email    String     @unique
   username String     @unique
-  hashed_password String
+  hashed_password String @unique
   UserList UserList[]
   Session Session?
   @@map("user")
@@ -29,7 +29,6 @@ model UserList {
   id        Int     @id @default(autoincrement())
   userId    String @unique 
   user      User    @relation(fields: [userId], references: [id])
-  animelist Anime[] 
   @@map("user_list")
 }
 
@@ -45,25 +44,24 @@ model Seasons {
 }
 
 model Anime {
-  id        Int    @id @unique
-  seasonInfo Seasons @relation(fields: [entry], references: [seasonYearCategory])
+  dbID     Int     @id @default(autoincrement())
+  id        Int     
+  seasonInfo Seasons @relation(fields: [entry], references: [seasonYearCategory], onDelete: Cascade)
   entry     String
-  userList UserList[] 
   category String 
   season  String 
   year   Int
-  title   String?
+  title   String
   episodes Int?
-  genres Json?
+  genres Json[]
   score Float?
   synopsis String?
-  studios Json?
+  studios Json[]
   source String?
-  images String?
+  images Json?
   members Int
   broadcast Json?
   aired Json?
   isCurrentlyAiring String
-  isPrevSeason Boolean
   @@map("anime")
 }

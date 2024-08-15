@@ -12,7 +12,6 @@ enum AiringStatus {
 
 interface cardProps {
   id: number;
-  isPrevSeason: boolean; //sent from CardView to determine if show is a leftover from previous season
   isCurrentlyAiring: AiringStatus;
   genres: any;
   studios: any;
@@ -81,7 +80,6 @@ const getAiringTime = (
 
 const Card = ({
   id,
-  isPrevSeason,
   isCurrentlyAiring,
   broadcast,
   episodes,
@@ -116,7 +114,7 @@ const Card = ({
     const endMonth = date.toLocaleString("en-us", { month: "long" });
 
     //currently airing show from this season (includes prev season's continuing shows)
-    if (isCurrentlyAiring === "Currently Airing") {
+    if (isCurrentlyAiring === AiringStatus["Currently Airing"]) {
       return (
         <>
           Episode X of {episodes == null ? "?" : episodes} airing in
@@ -129,8 +127,7 @@ const Card = ({
 
     //finished airing show from this season (incl. movies, ovas, etc.)
     else if (
-      isCurrentlyAiring == "Finished Airing" &&
-      !isPrevSeason &&
+      isCurrentlyAiring == AiringStatus["Finished Airing"] && 
       season === firstSeason.season
     ) {
       if (
@@ -160,7 +157,7 @@ const Card = ({
     }
 
     //shows for future seasons or shows that have not aired yet (start/end date usually is unknown)
-    else if (isCurrentlyAiring == "Not yet aired") {
+    else if (isCurrentlyAiring == AiringStatus["Not yet aired"]) {
       //supposed start date has already passed
       if (
         startMonthNumber < today.getMonth() + 1 ||
@@ -194,8 +191,8 @@ const Card = ({
 
   //calculates airing time for current season's shows (includes continuing shows)
   if (
-    isPrevSeason ||
-    isCurrentlyAiring === "Currently Airing" ||
+    
+    isCurrentlyAiring === AiringStatus["Currently Airing"] ||
     (season == firstSeason.season && year == firstSeason.year)
   ) {
     const broadDay: string = broadcast["day"]; //returns day of week as string

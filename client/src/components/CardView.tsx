@@ -1,10 +1,11 @@
 "use client";
 
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState,
+  useActionState
+ } from "react";
 import { FaSearch } from "react-icons/fa";
-import getData from "../api/getData";
-import { seasonInfo } from "../modules/Season";
+import getDataWrapper from "../api/getData";
 import reducer from "../modules/sortAnime";
 import Card from "./Card";
 import DropdownMenu from "./DropdownMenu";
@@ -19,7 +20,6 @@ interface CardViewProps {
 
 interface AnimeList {
   currentTVData: any;
-  prevTVData: any;
   movieData: any;
   ovaData: any;
   onaData: any;
@@ -27,26 +27,8 @@ interface AnimeList {
 }
 
 const CardView = ({ season, year }: CardViewProps) => {
-  let prevSeason: string;
-  let prevYear: number = year;
-  switch (season) {
-    case "Winter":
-      prevSeason = "Fall";
-      prevYear = year - 1;
-      break;
-    case "Spring":
-      prevSeason = "Winter";
-      break;
-    case "Summer":
-      prevSeason = "Spring";
-      break;
-    case "Fall":
-      prevSeason = "Summer";
-      break;
-  }
-
   const [animeList, dispatch] = useReducer(reducer, {} as AnimeList);
-  const [copyAnimeList, copyDispatch] = useReducer(reducer, {} as AnimeList); //copy used for filtering anime
+  const [copyAnimeList, copyDispatch] = useReducer(reducer, {} as AnimeList); //copy used for filtering anime and for the final display
   const [sortType, setSortType] = useState("default");
   const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState<string>("");
@@ -55,7 +37,6 @@ const CardView = ({ season, year }: CardViewProps) => {
   useEffect(() => {
     async function getAnimeList() {
       let currentTVData = animeList.currentTVData;
-      let prevTVData = animeList.prevTVData || null;
       let movieData = animeList.movieData;
       let ovaData = animeList.ovaData;
       let onaData = animeList.onaData;
@@ -68,23 +49,17 @@ const CardView = ({ season, year }: CardViewProps) => {
       ) {
         setIsLoading(true);
 
-        currentTVData = await getData(season, year, "tv", false);
-        prevTVData = null;
-        movieData = await getData(season, year, "movie", false);
-        ovaData = await getData(season, year, "ova", false);
-        onaData = await getData(season, year, "ona", false);
-        specialData = await getData(season, year, "special", false);
-
-        if (season == seasonInfo.firstSeason.season) {
-          prevTVData = await getData(prevSeason, prevYear, "tv", true);
-        }
+        currentTVData = await getDataWrapper(season, year, "tv", true);
+        movieData = await getDataWrapper(season, year, "movie", false);
+        ovaData = await getDataWrapper(season, year, "ova", false);
+        onaData = await getDataWrapper(season, year, "ona", false);
+        specialData = await getDataWrapper(season, year, "special", false);
 
         dispatch({
           type: "setAnimeList",
           payload: {
             searchQuery: query,
             currentTVData,
-            prevTVData,
             movieData,
             ovaData,
             onaData,
@@ -97,7 +72,6 @@ const CardView = ({ season, year }: CardViewProps) => {
           payload: {
             searchQuery: query,
             currentTVData,
-            prevTVData,
             movieData,
             ovaData,
             onaData,
@@ -118,7 +92,6 @@ const CardView = ({ season, year }: CardViewProps) => {
           payload: {
             searchQuery: "",
             currentTVData,
-            prevTVData,
             movieData,
             ovaData,
             onaData,
@@ -129,12 +102,11 @@ const CardView = ({ season, year }: CardViewProps) => {
           type: sortType as any,
           payload: {
             searchQuery: query,
-            currentTVData: currentTVData,
-            prevTVData: prevTVData,
-            movieData: movieData,
-            ovaData: ovaData,
-            onaData: onaData,
-            specialData: specialData,
+            currentTVData,
+            movieData,
+            ovaData,
+            onaData,
+            specialData,
           },
         });
         setIsLoading(false);
@@ -145,7 +117,6 @@ const CardView = ({ season, year }: CardViewProps) => {
           payload: {
             searchQuery: query,
             currentTVData,
-            prevTVData,
             movieData,
             ovaData,
             onaData,
@@ -195,31 +166,6 @@ const CardView = ({ season, year }: CardViewProps) => {
           )}
         </div>
 
-        {season == seasonInfo.firstSeason.season &&
-          copyAnimeList.prevTVData != null && (
-            <>
-              <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
-                Continuing
-              </h2>
-              <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
-                {copyAnimeList.prevTVData.length != 0 ? (
-                  copyAnimeList.prevTVData.map((entry: any, idx: number) => (
-                    <AnimatePresence key={idx}>
-                      <Card
-                        className="col-span-1"
-                        key={entry.id}
-                        {...entry}
-                        isPrevSeason={true}
-                      />
-                    </AnimatePresence>
-                  ))
-                ) : (
-                  <h1 className="ml-5 text-xl text-gray-500">No anime found</h1>
-                )}
-              </div>
-            </>
-          )}
-
         <h2 className="px-5 pt-4 text-xl font-bold uppercase text-gray-600">
           Movie
         </h2>
@@ -254,7 +200,7 @@ const CardView = ({ season, year }: CardViewProps) => {
           ONA
         </h2>
         <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
-          {copyAnimeList.ovaData.length != 0 ? (
+          {copyAnimeList.onaData.length != 0 ? (
             copyAnimeList.onaData.map((entry: any, idx: number) => (
               <AnimatePresence key={idx}>
                 <Card className="col-span-1" key={entry.id} {...entry} />
@@ -269,7 +215,7 @@ const CardView = ({ season, year }: CardViewProps) => {
           Specials
         </h2>
         <div className="grid gap-y-5 px-4 py-5 md:grid-cols-2 md:gap-x-5 base:grid-cols-3 base:gap-x-2 2xl:grid-cols-4 2xl:gap-x-5">
-          {copyAnimeList.ovaData.length != 0 ? (
+          {copyAnimeList.specialData.length != 0 ? (
             copyAnimeList.specialData.map((entry: any, idx: number) => (
               <AnimatePresence key={idx}>
                 <Card className="col-span-1" key={entry.id} {...entry} />

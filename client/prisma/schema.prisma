@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -33,19 +27,43 @@ model Session {
 
 model UserList {
   id        Int     @id @default(autoincrement())
-  userId    String
+  userId    String @unique 
   user      User    @relation(fields: [userId], references: [id])
-  animelist Anime[]
+  animelist Anime[] 
   @@map("user_list")
 }
 
+model Seasons {
+  id        Int     @id @default(autoincrement())
+  seasonYearCategory String @unique
+  season    String 
+  year      Int
+  anime     Anime[] 
+  updatedAt DateTime
+  category String 
+  @@map("seasons")
+}
+
 model Anime {
-  id       Int    @id 
-  // title    String
-  // image    String
-  // score    Float
-  // status   String
-  // episodes Int
+  id        Int    @id @unique
+  seasonInfo Seasons @relation(fields: [entry], references: [seasonYearCategory])
+  entry     String
   userList UserList[] 
+  category String 
+  season  String 
+  year   Int
+  title   String?
+  episodes Int?
+  genres Json?
+  score Float?
+  synopsis String?
+  studios Json?
+  source String?
+  images String?
+  members Int
+  broadcast Json?
+  aired Json?
+  isCurrentlyAiring String
+  isPrevSeason Boolean
   @@map("anime")
 }

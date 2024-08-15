@@ -1,19 +1,55 @@
+"use server";
+
+import { ca } from "date-fns/locale";
 import pThrottle from "p-throttle";
-import { isPrevSeason, isCurrentSeason } from "../modules/Season";
 
 const throttle = pThrottle({
   limit: 1,
-  interval: 1000,
+  interval: 3000,
 });
 //api rate limit = 60 req/min
 
 const fetchFn = throttle(
-  async (page: number, season: string, year: number, category: string) => {
-    return fetch(
+  async (
+    page: number,
+    season: string,
+    year: number,
+    category: string,
+    previousSeason: boolean
+  ) => {
+    let res;
+    if (category === "tv" && previousSeason === true) {
+      res = await fetch(
+        `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&continuing&page=${page}`
+      );
+    }
+    else{
+    res = await fetch(
       `https://api.jikan.moe/v4/seasons/${year}/${season}?filter=${category}&page=${page}`
     );
   }
+    return res;
+  }
 );
+
+const getDataWrapper = async (
+  season: string,
+  year: number,
+  category: string,
+  previousSeason: boolean
+) => {
+  // const cache = await fetchCache(season, year, category);
+
+  // if (cache != false) {
+  //   console.log(cache);
+  //   return cache.anime;
+  // }
+  // else{
+  const data = await getData(season, year, category, previousSeason);
+  // updateCache(season, year, data, category);
+  return data;
+  // }
+};
 
 const getData = async (
   season: string,
@@ -24,16 +60,15 @@ const getData = async (
   let animeList: any = [];
   try {
     let page = 1;
-    let res = await fetchFn(page, season, year, category);
+    let res = await fetchFn(page, season, year, category, previousSeason);
     let data = await res.json();
     let animeID = new Set<number>();
 
     while (page == 1 || data.pagination.has_next_page) {
       if (page != 1) {
-        res = await fetchFn(page, season, year, category);
+        res = await fetchFn(page, season, year, category, previousSeason);
         data = await res.json();
       }
-
       data.data
         .filter(
           (anime: any) => !anime.genres.some((obj: any) => obj.name == "Hentai")
@@ -41,70 +76,35 @@ const getData = async (
         .map(async (anime: any) => {
           //get continuing shows from previous season
           if (animeID.has(anime.mal_id)) return;
-          const startMonth = Number(anime.aired.prop.from["month"]);
-          const startYear = Number(anime.aired.prop.from["year"]);
-
-          if (previousSeason == true) {
-            //get shows that are currently airing from previous season (continuing shows for current season)
-            if (anime.status === "Currently Airing") {
-            animeList.push({
-              season: season,
-              year: year,
-              id: anime.mal_id,
-              episodes: anime.episodes,
-              genres: anime.genres,
-              score: anime.score,
-              title: anime.title,
-              synopsis: anime.synopsis,
-              studios: anime.studios,
-              source: anime.source,
-              images: anime.images,
-              members: anime.members,
-              broadcast: anime.broadcast,
-              aired: anime.aired,
-              isCurrentlyAiring: anime.status,
-              isPrevSeason: true,
-            });
-            animeID.add(anime.mal_id);
-            }
-          } else {
-            //get shows that have not previously aired before (could be this season/future seasons)
-            if ((isCurrentSeason(season, year) && !isPrevSeason(startMonth, startYear)) || !isCurrentSeason(season, year)) { 
-              //if the current page is for the current season then check to make sure its not a continuing show
-              animeList.push({
-                season: season,
-                year: year,
-                id: anime.mal_id,
-                episodes: anime.episodes,
-                genres: anime.genres,
-                score: anime.score,
-                title: anime.title,
-                synopsis: anime.synopsis,
-                studios: anime.studios,
-                source: anime.source,
-                images: anime.images,
-                members: anime.members,
-                broadcast: anime.broadcast,
-                aired: anime.aired,
-                isCurrentlyAiring: anime.status,
-                isPrevSeason: false,
-              });
-              animeID.add(anime.mal_id);
-            }
-          }
+          const animeDataObject = {
+            season: season,
+            year: year,
+            id: anime.mal_id,
+            episodes: anime.episodes,
+            genres: anime.genres,
+            score: anime.score,
+            title: anime.title,
+            synopsis: anime.synopsis,
+            studios: anime.studios,
+            source: anime.source,
+            images: anime.images,
+            members: anime.members,
+            broadcast: anime.broadcast,
+            aired: anime.aired,
+            isCurrentlyAiring: anime.status,
+          };
+          animeID.add(anime.mal_id);
+          animeList.push(animeDataObject);
         });
-
-      page++;
-      // console.log(data);
+        page++;
     }
-    // console.log(animeList);
   } catch (error) {
     console.error(error);
   }
   return animeList;
 };
 
-export default getData;
+export default getDataWrapper;
 
 const testData = {
   season: "Winter",

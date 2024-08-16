@@ -41,7 +41,7 @@ const getDataWrapper = async (
   const cache = await fetchCache(season, year, category);
 
   if (cache != false) {
-    return cache;
+    return cache.cachedData;
   }
   else{
     const data = await getData(season, year, category, previousSeason);

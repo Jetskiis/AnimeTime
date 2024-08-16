@@ -1,7 +1,7 @@
 "use server";
-//updates data in cache
 import { PrismaClient } from "@prisma/client";
 import { cardProps } from "../components/Card";
+import { redisClient } from "./redisClient";
 
 const prisma = new PrismaClient();
 
@@ -10,7 +10,15 @@ export const fetchCache = async (
   year: number,
   category: string
 ) => {
-  //if cache empty
+  //if data in cache, return it
+  const searchQuery: string = season + year + category;
+  const cache = await (await redisClient).exists(searchQuery);
+
+  if (cache != 0) {
+    const cachedData = await(await redisClient).get(searchQuery);
+    return cachedData ? {cachedData: JSON.parse(cachedData), isCache: true} : {cachedData: [], isCache: false};
+  }
+
   const seasonEntry = await prisma.seasons.findFirst({
     where: {
       season: season,
@@ -18,8 +26,8 @@ export const fetchCache = async (
       category: category,
     },
     include: {
-      anime: true
-    }
+      anime: true,
+    },
   });
 
   if (
@@ -28,7 +36,13 @@ export const fetchCache = async (
   ) {
     return false;
   }
-  return seasonEntry.anime;
+  //update cache , set to expire in 1 day
+  await(await redisClient).set(
+    season + year + category,
+    JSON.stringify(seasonEntry.anime),
+    { EX: 60 * 60 * 24 }
+  );
+  return {cachedData: seasonEntry.anime, isCache: false};
 };
 
 export const updateCache = async (
@@ -89,6 +103,10 @@ export const updateCache = async (
           },
         },
       });
+    });
+    //expire in 1 day
+    await(await redisClient).set(season + year + category, JSON.stringify(animeDBObjects), {
+      EX: 60 * 60 * 24,
     });
     return true;
   } catch (e) {

@@ -1,6 +1,5 @@
 import { createClient } from "redis";
 
-const url = process.env.REDIS_URL || "random";
 
 const redisClient = createClient({
   password: process.env.REDIS_PASSWORD, 

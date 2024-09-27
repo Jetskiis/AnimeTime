@@ -3,7 +3,6 @@ Created with:
   - NextJS with Prisma to Postgres & Redis (Back End)
   - AWS amplify with hosting
 
-<b>Site: </b> [AnimeTime](https://master.d2ei9lfoiq7gde.amplifyapp.com/)
 
 Uses the JIKAN API (MyAnimeList Scraper) and AnimeSchedule.net API for seasonal anime data 
 
